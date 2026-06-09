@@ -5,6 +5,17 @@ All notable changes to **DocNest .NET** are documented here. Format based on
 
 ## [Unreleased]
 
+### Added — Slice 5: hybrid retrieval engine
+- **`DocNest.Retrieval`** (new assembly) — `HybridRetriever` (`IRetriever`): SQLite FTS5 BM25 + dense
+  cosine (over an injected `IEmbedder`) + RRF fusion (K=60, BM25 2.0, Dense 1.5) + 1-hop section-graph
+  expansion (child 0.15 / sibling 0.10 / semantic 0.12; child→parent disabled) + SHA-256-fingerprint
+  cache. Pure `RrfFusion`/`RetrievalTokenizer`; SQLite behind `SqliteRetrievalStore`.
+- **Abstractions** — `IRetriever` + `RetrievalHit` record.
+- **Dependency:** `Microsoft.Data.Sqlite` (MIT; FTS5 bundled). Dense = exact brute-force cosine (HNSW deferred).
+- **Tests** — +11 (exact RRF/graph math; real-SQLite integration with a deterministic fake embedder;
+  cache hit/invalidate; no-embedder degraded path). ADR-0007.
+- The real ONNX embedder (Slice 6) plugs into the `IEmbedder` seam; the 5-layer LLM answer engine is a later slice.
+
 ### Added — Slice 4c: PDF parser (text PDFs)
 - **`DocNest.Parsers/Pdf`** — `PdfParser` (font-size heading detection: median font, ×1.15 threshold,
   bold rule, distinct-size level banding, "Introduction" fallback, title = largest line) + `PdfLineExtractor`

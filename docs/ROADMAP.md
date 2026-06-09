@@ -7,7 +7,8 @@
 > **Slice 3 (pipeline + normaliser): ✅ shipped to `main` (`v0.0.3-pipeline`, 76 pass / 2 skip) — milestone M1.**
 > **Slice 4 (text parsers md/html/csv + ParserFactory): ✅ shipped to `main` (`v0.0.4-parsers`, 94 pass / 2 skip).**
 > **Slice 4b (OpenXML docx/xlsx): ✅ shipped to `main` (`v0.0.5-openxml`, 103 pass / 2 skip).**
-> **Currently active: Slice 4c (PDF text parser via UglyToad.PdfPig), at GATE 0 — see [phase0/SLICE-4C-ROADMAP.md](phase0/SLICE-4C-ROADMAP.md). Parser line: 4 (text) ✅ → 4b (OpenXML) ✅ → 4c (pdf) → [later] pdf-tables, OCR/scanned, large-PDF.**
+> **Slice 4c (PDF text parser): ✅ shipped to `main` (`v0.0.6-pdf`, 107 pass / 2 skip) — all 6 common formats ingest.**
+> **Currently active: Slice 5 (hybrid retrieval: SQLite FTS5 BM25 + dense cosine + RRF + graph), at GATE 0 — see [phase0/SLICE-05-ROADMAP.md](phase0/SLICE-05-ROADMAP.md).**
 
 ## Program slices (ordered, with dependencies)
 

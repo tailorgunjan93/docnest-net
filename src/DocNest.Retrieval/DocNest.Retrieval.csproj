@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>DocNest.Retrieval</RootNamespace>
+    <AssemblyName>DocNest.Retrieval</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DocNest.Abstractions\DocNest.Abstractions.csproj" />
+    <ProjectReference Include="..\DocNest.Core\DocNest.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- SQLite (FTS5 bundled) — kept behind the SqliteRetrievalStore wrapper. -->
+    <PackageReference Include="Microsoft.Data.Sqlite" />
+  </ItemGroup>
+
+</Project>
