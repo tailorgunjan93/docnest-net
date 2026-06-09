@@ -3,7 +3,8 @@
 > Consolidates the BA/Dev/QA understanding into a sequenced plan. The program is a series of
 > gated vertical slices; each slice runs the full Phase 1→7 cycle with owner sign-off.
 > **Slice 1 (Core domain + contracts): ✅ shipped to `main` (32/32 green).**
-> **Currently active: Slice 2 (`.udf` read/write), at GATE 0 — see [phase0/SLICE-02-ROADMAP.md](phase0/SLICE-02-ROADMAP.md).**
+> **Slice 2 (`.udf` read/write): ✅ shipped to `main` (`v0.0.2-udf`, 48 pass / 2 interop-skip).**
+> **Currently active: Slice 3 (pipeline + normaliser), at GATE 0 — see [phase0/SLICE-03-ROADMAP.md](phase0/SLICE-03-ROADMAP.md).**
 
 ## Program slices (ordered, with dependencies)
 

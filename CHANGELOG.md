@@ -5,6 +5,17 @@ All notable changes to **DocNest .NET** are documented here. Format based on
 
 ## [Unreleased]
 
+### Added — Slice 3: pipeline + normaliser (milestone M1)
+- **`DocNest.Core/Pipeline`** — `SectionNormaliser` (immutable two-pass §id assignment with compact
+  depth, parent/child links, `token_count = int(words×1.3)`, table column-width normalisation) and
+  `DocNestPipeline` (normalise → deterministic key-numbers → deterministic keywords; optional injected
+  `IParser` for `ProcessAsync(path)`).
+- **`DocNest.Core/Intelligence`** — `KeyNumberExtractor` and `KeywordExtractor`: pure, LLM-free,
+  `[GeneratedRegex]` ports of the Python `key_numbers.py` / `keywords.py` (figure detection + label
+  binding + noise filters; frequency × specificity keywords with title priority).
+- **Tests** — +28 (normaliser, extractor parity case tables, pipeline incl. a `.udf` round-trip tie-in).
+- **M1 reached:** a `.udf` round-trips between Python and .NET on synthetic documents (Slices 1–3).
+
 ### Added — Slice 2: `.udf` read/write
 - **`DocNest.Storage`** — `ZipStorageBackend` implementing `IStorageBackend` over
   `System.IO.Compression` (DEFLATE for JSON/text, stored for binary/images).
