@@ -5,6 +5,22 @@ All notable changes to **DocNest .NET** are documented here. Format based on
 
 ## [Unreleased]
 
+### Added — Slice 2: `.udf` read/write
+- **`DocNest.Storage`** — `ZipStorageBackend` implementing `IStorageBackend` over
+  `System.IO.Compression` (DEFLATE for JSON/text, stored for binary/images).
+- **`DocNest.Core/Udf`** — wire DTOs (`ManifestDto`/`CatalogueDto`/`ContentDto`/…) modelling the exact
+  `.udf` JSON schema; a dedicated `UdfJson` serializer that writes `null`s and emits raw non-ASCII
+  (`UnsafeRelaxedJsonEscaping`) to match Python's `ensure_ascii=False`; `UdfWriter`, `UdfReader` +
+  `UdfPackage.ToDocument()` (reconstruct by §id join), and `SourceSanitiser`.
+- **Tests** — `DocNest.Storage.Tests` + `.udf` read/write/round-trip/key-parity/version-gate/embeddings
+  tests; cross-ecosystem interop tests E1 (load a Python-built golden `.udf`) and E2 (Python reads a
+  .NET-built `.udf`), both `[SkippableFact]` (skip with reason until a fixture / Python env exists).
+- **Tooling** — `tools/make_fixture.py` to generate the golden `tests/fixtures/sample.udf` from Python.
+
+### Changed
+- Renamed the `.udf` constant holder `Udf` → **`UdfFormat`** so the new `DocNest.Udf` namespace doesn't
+  collide with a same-named type. `UdfFormat.Version` is unchanged (`"1.0"`). (Pre-release; no consumers.)
+
 ### Added — Slice 1: Core domain + contracts
 - **`DocNest.Abstractions`** — immutable domain records (`TableData`, `ImageRef`, `Section`,
   `KeyNumber`, `RawDocument`, `DocMeta`, `Document`, `SectionIndexEntry`, `Catalogue`), the five

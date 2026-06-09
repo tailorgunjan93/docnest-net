@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DocNest.Abstractions\DocNest.Abstractions.csproj" />
+    <ProjectReference Include="..\DocNest.Storage\DocNest.Storage.csproj" />
   </ItemGroup>
 
   <!-- Zero runtime package dependencies — System.Text.Json ships in the BCL on net8.0. -->

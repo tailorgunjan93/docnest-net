@@ -13,6 +13,9 @@
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
     <!-- FluentAssertions pinned to the last Apache-2.0 (free) release; 7.x+ is commercial. -->
     <PackageVersion Include="FluentAssertions" Version="6.12.0" />
+    <!-- Runtime-conditional [SkippableFact] — lets interop tests skip (not silently pass) when a
+         fixture or Python is unavailable. -->
+    <PackageVersion Include="Xunit.SkippableFact" Version="1.4.13" />
   </ItemGroup>
 
 </Project>

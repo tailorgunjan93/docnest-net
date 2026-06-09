@@ -13,11 +13,18 @@
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
     <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="Xunit.SkippableFact" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\DocNest.Core\DocNest.Core.csproj" />
     <ProjectReference Include="..\..\src\DocNest.Abstractions\DocNest.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\DocNest.Storage\DocNest.Storage.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Golden interop fixtures (e.g. a Python-produced sample.udf), copied next to the test dll. -->
+    <None Include="fixtures\**\*" CopyToOutputDirectory="PreserveNewest" Condition="Exists('fixtures')" />
   </ItemGroup>
 
 </Project>

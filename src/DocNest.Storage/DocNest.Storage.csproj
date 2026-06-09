@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>DocNest.Storage</RootNamespace>
+    <AssemblyName>DocNest.Storage</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DocNest.Abstractions\DocNest.Abstractions.csproj" />
+  </ItemGroup>
+
+  <!-- System.IO.Compression is part of the net8.0 BCL — no package dependency. -->
+
+</Project>
