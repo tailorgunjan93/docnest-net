@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>DocNest.Parsers</RootNamespace>
+    <AssemblyName>DocNest.Parsers</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DocNest.Abstractions\DocNest.Abstractions.csproj" />
+    <ProjectReference Include="..\DocNest.Core\DocNest.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- HTML only — kept behind the HtmlParser (IParser) wrapper. -->
+    <PackageReference Include="AngleSharp" />
+  </ItemGroup>
+
+</Project>

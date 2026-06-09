@@ -5,6 +5,16 @@ All notable changes to **DocNest .NET** are documented here. Format based on
 
 ## [Unreleased]
 
+### Added — Slice 4: text-format parsers + ParserFactory
+- **`DocNest.Parsers`** (new assembly) — `MarkdownParser` (zero-dep ATX scan with fenced-code
+  tracking), `CsvParser` (zero-dep RFC-4180 reader + delimiter heuristic + UTF-8-BOM→UTF-8→Latin-1
+  cascade), `HtmlParser` (AngleSharp; `h1`–`h6` hierarchy + `<table>` rowspan/colspan grid expansion),
+  and `ParserFactory` (ordered registry, first-match routing, runtime register/unregister).
+- **Dependency:** AngleSharp (MIT) — HTML only, kept behind the `HtmlParser` `IParser` wrapper.
+- **Tests** — +18 (per-parser case tables incl. HTML rowspan grid + CSV quoting; ParserFactory;
+  parse → pipeline → `.udf` round-trip for `.md`/`.csv`/`.html`). Real text files now ingest end-to-end.
+- Parser sub-split: OpenXML (docx/xlsx) and PDF land in later slices (4b/4c).
+
 ### Added — Slice 3: pipeline + normaliser (milestone M1)
 - **`DocNest.Core/Pipeline`** — `SectionNormaliser` (immutable two-pass §id assignment with compact
   depth, parent/child links, `token_count = int(words×1.3)`, table column-width normalisation) and

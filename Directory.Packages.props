@@ -6,7 +6,13 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
 
-  <!-- Test-only dependencies. The production library has ZERO runtime package dependencies. -->
+  <!-- Runtime dependencies (kept minimal; each sits behind a DocNest wrapper). -->
+  <ItemGroup>
+    <!-- HTML parsing (DocNest.Parsers / HtmlParser only). MIT, W3C-compliant HTML5 parser. -->
+    <PackageVersion Include="AngleSharp" Version="1.1.2" />
+  </ItemGroup>
+
+  <!-- Test-only dependencies. The core libraries have ZERO runtime package dependencies. -->
   <ItemGroup>
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
     <PackageVersion Include="xunit" Version="2.9.2" />

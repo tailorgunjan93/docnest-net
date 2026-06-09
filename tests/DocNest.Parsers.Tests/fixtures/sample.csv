@@ -1,0 +1,4 @@
+Name,Amount,Note
+Alice,"1,200","says ""hi"""
+Bob,800
+Carol,500,extra,ignored
