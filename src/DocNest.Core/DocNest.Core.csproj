@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>DocNest</RootNamespace>
+    <AssemblyName>DocNest.Core</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DocNest.Abstractions\DocNest.Abstractions.csproj" />
+  </ItemGroup>
+
+  <!-- Zero runtime package dependencies — System.Text.Json ships in the BCL on net8.0. -->
+
+</Project>

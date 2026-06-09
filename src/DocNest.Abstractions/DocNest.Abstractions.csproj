@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>DocNest</RootNamespace>
+    <AssemblyName>DocNest.Abstractions</AssemblyName>
+  </PropertyGroup>
+
+  <!-- Zero runtime package dependencies — BCL only. -->
+
+</Project>

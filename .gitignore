@@ -1,0 +1,25 @@
+# .NET build output
+bin/
+obj/
+*.user
+*.suo
+.vs/
+
+# Test / coverage
+[Tt]est[Rr]esults/
+*.trx
+coverage*.xml
+coverage*.json
+
+# Packages
+*.nupkg
+*.snupkg
+
+# ONNX / model assets (downloaded, not committed)
+models/*.onnx
+*.onnx_data
+
+# OS / editor
+.idea/
+.DS_Store
+Thumbs.db
