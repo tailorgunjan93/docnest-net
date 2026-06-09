@@ -5,6 +5,15 @@ All notable changes to **DocNest .NET** are documented here. Format based on
 
 ## [Unreleased]
 
+### Added — Slice 4c: PDF parser (text PDFs)
+- **`DocNest.Parsers/Pdf`** — `PdfParser` (font-size heading detection: median font, ×1.15 threshold,
+  bold rule, distinct-size level banding, "Introduction" fallback, title = largest line) + `PdfLineExtractor`
+  (reconstructs ordered lines from PdfPig letters, clustering on the text **baseline**). Registers in `ParserFactory`.
+- **Dependency:** `PdfPig` (Apache-2.0, pure-managed) — pdf only, behind the `PdfParser` wrapper.
+- **Tests** — +4; `.pdf` fixture built in-test with PdfSharp (MIT). **All 6 common formats now ingest**
+  (md, html, csv, docx, xlsx, pdf). ADR-0006.
+- **Deferred (scheduled):** PDF table extraction and OCR/scanned PDFs are their own later hardening slices.
+
 ### Added — Slice 4b: OpenXML parsers (docx + xlsx)
 - **`DocNest.Parsers/Office`** — `DocxParser` (ordered body walk; heading styles + ALL-CAPS/bold/colon
   pseudo-headings; tables with `gridSpan`/`vMerge` **merged-cell expansion** via `DocxTable`) and

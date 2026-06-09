@@ -15,6 +15,8 @@
     <PackageReference Include="AngleSharp" />
     <!-- docx/xlsx only — kept behind the Office parsers (IParser) wrappers. -->
     <PackageReference Include="DocumentFormat.OpenXml" />
+    <!-- pdf only — kept behind the PdfParser (IParser) wrapper. -->
+    <PackageReference Include="PdfPig" />
   </ItemGroup>
 
 </Project>

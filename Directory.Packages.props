@@ -12,6 +12,8 @@
     <PackageVersion Include="AngleSharp" Version="1.1.2" />
     <!-- OpenXML docx/xlsx parsing (DocNest.Parsers / Office only). MIT, Microsoft. -->
     <PackageVersion Include="DocumentFormat.OpenXml" Version="3.1.0" />
+    <!-- PDF text parsing (DocNest.Parsers / PdfParser only). Apache-2.0, pure-managed. -->
+    <PackageVersion Include="PdfPig" Version="0.1.14" />
   </ItemGroup>
 
   <!-- Test-only dependencies. The core libraries have ZERO runtime package dependencies. -->
@@ -24,6 +26,8 @@
     <!-- Runtime-conditional [SkippableFact] — lets interop tests skip (not silently pass) when a
          fixture or Python is unavailable. -->
     <PackageVersion Include="Xunit.SkippableFact" Version="1.4.13" />
+    <!-- Build .pdf fixtures in-test (DocNest.Parsers.Tests only). MIT. -->
+    <PackageVersion Include="PdfSharp" Version="6.2.0" />
   </ItemGroup>
 
 </Project>

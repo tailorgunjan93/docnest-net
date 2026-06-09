@@ -9,7 +9,7 @@ public sealed class ParserFactory
 {
     private readonly List<IParser> _registry;
 
-    /// <summary>Create a factory with the built-in parsers (markdown, csv, html, docx, xlsx).</summary>
+    /// <summary>Create a factory with the built-in parsers (markdown, csv, html, docx, xlsx, pdf).</summary>
     public ParserFactory()
         => _registry = new List<IParser>
         {
@@ -18,6 +18,7 @@ public sealed class ParserFactory
             new HtmlParser(),
             new DocxParser(),
             new ExcelParser(),
+            new PdfParser(),
         };
 
     /// <summary>Return the first registered parser that supports <paramref name="filePath"/>.</summary>
