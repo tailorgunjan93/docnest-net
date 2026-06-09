@@ -5,7 +5,8 @@
 > **Slice 1 (Core domain + contracts): ✅ shipped to `main` (32/32 green).**
 > **Slice 2 (`.udf` read/write): ✅ shipped to `main` (`v0.0.2-udf`, 48 pass / 2 interop-skip).**
 > **Slice 3 (pipeline + normaliser): ✅ shipped to `main` (`v0.0.3-pipeline`, 76 pass / 2 skip) — milestone M1.**
-> **Currently active: Slice 4 (text-format parsers md/html/csv + ParserFactory), at GATE 0 — see [phase0/SLICE-04-ROADMAP.md](phase0/SLICE-04-ROADMAP.md). Parser split proposed: 4 (text) → 4b (OpenXML) → 4c (pdf).**
+> **Slice 4 (text parsers md/html/csv + ParserFactory): ✅ shipped to `main` (`v0.0.4-parsers`, 94 pass / 2 skip).**
+> **Currently active: Slice 4b (OpenXML docx/xlsx via DocumentFormat.OpenXml), at GATE 0 — see [phase0/SLICE-4B-ROADMAP.md](phase0/SLICE-4B-ROADMAP.md). Parser line: 4 (text) ✅ → 4b (OpenXML) → 4c (pdf).**
 
 ## Program slices (ordered, with dependencies)
 

@@ -13,6 +13,8 @@
   <ItemGroup>
     <!-- HTML only — kept behind the HtmlParser (IParser) wrapper. -->
     <PackageReference Include="AngleSharp" />
+    <!-- docx/xlsx only — kept behind the Office parsers (IParser) wrappers. -->
+    <PackageReference Include="DocumentFormat.OpenXml" />
   </ItemGroup>
 
 </Project>

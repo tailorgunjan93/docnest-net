@@ -5,6 +5,15 @@ All notable changes to **DocNest .NET** are documented here. Format based on
 
 ## [Unreleased]
 
+### Added — Slice 4b: OpenXML parsers (docx + xlsx)
+- **`DocNest.Parsers/Office`** — `DocxParser` (ordered body walk; heading styles + ALL-CAPS/bold/colon
+  pseudo-headings; tables with `gridSpan`/`vMerge` **merged-cell expansion** via `DocxTable`) and
+  `ExcelParser` (each sheet → section; shared-strings + sparse-row reading via `XlsxReader`; logical-table
+  split heuristic; `.xls` rejected). Both register in `ParserFactory`.
+- **Dependency:** `DocumentFormat.OpenXml` (MIT) — docx/xlsx only, behind the Office `IParser` wrappers.
+- **Tests** — +9; `.docx`/`.xlsx` fixtures built in-test via the OpenXML SDK (no committed binaries).
+- Addresses the "complex tables" hardening target (Word merged cells). ADR-0005.
+
 ### Added — Slice 4: text-format parsers + ParserFactory
 - **`DocNest.Parsers`** (new assembly) — `MarkdownParser` (zero-dep ATX scan with fenced-code
   tracking), `CsvParser` (zero-dep RFC-4180 reader + delimiter heuristic + UTF-8-BOM→UTF-8→Latin-1

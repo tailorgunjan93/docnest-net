@@ -9,9 +9,16 @@ public sealed class ParserFactory
 {
     private readonly List<IParser> _registry;
 
-    /// <summary>Create a factory with the built-in text parsers (markdown, csv, html).</summary>
+    /// <summary>Create a factory with the built-in parsers (markdown, csv, html, docx, xlsx).</summary>
     public ParserFactory()
-        => _registry = new List<IParser> { new MarkdownParser(), new CsvParser(), new HtmlParser() };
+        => _registry = new List<IParser>
+        {
+            new MarkdownParser(),
+            new CsvParser(),
+            new HtmlParser(),
+            new DocxParser(),
+            new ExcelParser(),
+        };
 
     /// <summary>Return the first registered parser that supports <paramref name="filePath"/>.</summary>
     /// <exception cref="UnsupportedFormatException">If no registered parser handles the format.</exception>
