@@ -13,6 +13,12 @@ public sealed class DocNestQueryEngine
     private const int MultiProseChars = 600;
     private const int FullDocChars = 6000;
 
+    // Escalation thresholds on the [0,1] query-term-recall confidence (ADR-0011). Calibrated on the
+    // multi-format eval: above L1 → trust the deterministic 0-token answer; below it escalate to the
+    // LLM; below L2 the top section is too weak for a single-section answer → multi/full-doc.
+    private const double L1Threshold = 0.6;
+    private const double L2Threshold = 0.2;
+
     private readonly IRetriever _retriever;
     private readonly ILlmProvider? _llm;
 
@@ -38,20 +44,24 @@ public sealed class DocNestQueryEngine
             return new QueryResult(precomputed, [], 0, 0, 1.0);
         }
 
-        // ── Layer 1: extractive from the top retrieved section (0 tokens) ──────
+        // ── Retrieve, then gate escalation on an absolute confidence (ADR-0011) ─
         var hits = await _retriever.RetrieveAsync(doc, question, 8, cancellationToken).ConfigureAwait(false);
-        if (hits.Count > 0)
+        var confidence = hits.Count > 0 ? Confidence.Of(question, hits[0].Section) : 0.0;
+
+        // ── Layer 1: confident deterministic answer from the top section (0 tokens) ─
+        if (hits.Count > 0 && confidence >= L1Threshold)
         {
             var top = hits[0].Section;
             if (!string.IsNullOrEmpty(top.Summary))
             {
-                return new QueryResult(top.Summary!, new[] { top.Id }, 1, 0, 0.7);
+                return new QueryResult(top.Summary!, new[] { top.Id }, 1, 0, confidence);
             }
             var extract = Extractive.BestSentences(top.Text, question);
             if (extract.Length > 0)
             {
-                return new QueryResult(extract, new[] { top.Id }, 1, 0, 0.6);
+                return new QueryResult(extract, new[] { top.Id }, 1, 0, confidence);
             }
+            // Confident but nothing extractable → fall through to the LLM layers.
         }
 
         if (!allowLlm || _llm is null)
@@ -59,8 +69,8 @@ public sealed class DocNestQueryEngine
             return new QueryResult(string.Empty, [], -1, 0, 0.0);
         }
 
-        // ── Layer 2: single-section LLM ────────────────────────────────────────
-        if (hits.Count > 0)
+        // ── Layer 2: single-section LLM (top section confident enough to trust) ──
+        if (hits.Count > 0 && confidence >= L2Threshold)
         {
             var top = hits[0].Section;
             var body = SectionBody(top);
@@ -70,7 +80,12 @@ public sealed class DocNestQueryEngine
                     $"Answer the question using ONLY the section below. If the answer is not in the section, " +
                     $"say 'Not found in {top.Id}'.\n\nSection {top.Id}:\n{body}\n\nQuestion: {question}";
                 var answer = await _llm.CompleteAsync(prompt, cancellationToken: cancellationToken).ConfigureAwait(false);
-                return new QueryResult(answer, new[] { top.Id }, 2, Tokens(prompt, answer), 0.7);
+                // If the top section didn't contain the answer, escalate to multi-section synthesis
+                // rather than returning a dead end — the right section is often at rank 2-3.
+                if (!(answer.TrimStart().StartsWith("Not found", StringComparison.OrdinalIgnoreCase) && hits.Count >= 2))
+                {
+                    return new QueryResult(answer, new[] { top.Id }, 2, Tokens(prompt, answer), confidence);
+                }
             }
         }
 

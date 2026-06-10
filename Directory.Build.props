@@ -21,7 +21,7 @@
 
   <!-- Shared NuGet package metadata (test projects set IsPackable=false, so they ignore this). -->
   <PropertyGroup>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <Authors>SynapseAI</Authors>
     <Company>SynapseAI</Company>
     <Product>DocNest</Product>
