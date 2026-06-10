@@ -44,7 +44,8 @@ public class DocNestQueryEngineTests
     public async Task Layer1_returns_section_summary_zero_tokens()
     {
         var llm = new FakeLlm();
-        var section = Sec("§3", "Revenue", "Revenue grew.", summary: "Revenue increased 20%.");
+        // Confident match (both query tokens present) → Layer 1 summary, 0 tokens (SLICE-08 gate).
+        var section = Sec("§3", "Revenue", "Revenue growth was strong.", summary: "Revenue increased 20%.");
         var engine = new DocNestQueryEngine(new FakeRetriever(section), llm);
 
         var result = await engine.AnswerAsync(Doc(sections: section), "revenue growth");
@@ -59,7 +60,8 @@ public class DocNestQueryEngineTests
     public async Task Layer2_uses_llm_when_no_deterministic_answer()
     {
         var llm = new FakeLlm();
-        var section = Sec("§1", "X", "Lorem ipsum dolor sit amet consectetur.");
+        // Partial match (2 of 4 query tokens) → mid confidence → single-section LLM (Layer 2).
+        var section = Sec("§1", "X", "Quarterly revenue details.");
         var engine = new DocNestQueryEngine(new FakeRetriever(section), llm);
 
         var result = await engine.AnswerAsync(Doc(sections: section), "explain the quarterly revenue figures");

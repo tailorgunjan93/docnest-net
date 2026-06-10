@@ -17,6 +17,15 @@ public static partial class KeyNumberExtractor
         "that", "we", "our",
     };
 
+    // SLICE-08 (D-C): bare "<Word> <N>" counts that are names/versions or structural references
+    // (e.g. "Llama 2", "Figure 4", "Section 23") are not labelled metrics — they misfire as confident
+    // Layer-0 answers on PDFs. Colon-bound ("Total: 24") and unit-bound ($, %, ms) figures are unaffected.
+    private static readonly HashSet<string> ReferenceWords = new(StringComparer.Ordinal)
+    {
+        "figure", "fig", "table", "section", "sec", "chapter", "page", "eq", "equation",
+        "appendix", "part", "step", "item", "line", "note", "footnote", "ref", "version", "no", "vol",
+    };
+
     // Ordered most-specific-first so "$18,400" isn't split into 18 and 400.
     [GeneratedRegex(@"(?<money>\$\s?\d[\d,]*(?:\.\d+)?\s?(?:million|billion|trillion|M|B|K|k)?)|(?<percent>\d+(?:\.\d+)?\s?%)|(?<duration>\d+(?:\.\d+)?\s?(?:ms|seconds?|secs?|minutes?|mins?|hours?|hrs?|days?|weeks?|months?|years?)\b)|(?<ratio>\d+(?:\.\d+)?\s?[x×]\b)|(?<count>\b\d[\d,]*(?:\.\d+)?\b)")]
     private static partial Regex NumberRe();
@@ -83,6 +92,12 @@ public static partial class KeyNumberExtractor
 
                 var label = LabelFor(line, m.Index);
                 if (string.IsNullOrEmpty(label))
+                {
+                    continue;
+                }
+
+                // D-C: drop bare name/version + structural-reference counts ("Llama 2", "Figure 4").
+                if (kind == "count" && IsNoiseReference(line, m.Index, label))
                 {
                     continue;
                 }
@@ -185,6 +200,28 @@ public static partial class KeyNumberExtractor
         }
         var last = tokens[^1].Value.Trim('.', ',');
         return AcronymRe().IsMatch(last);
+    }
+
+    /// <summary>
+    /// True if a bare <c>count</c> number is a name/version or a structural reference rather than a
+    /// labelled metric. Colon-bound labels (<c>Total: 24</c>) are never noise. SLICE-08 D-C.
+    /// </summary>
+    private static bool IsNoiseReference(string line, int spanStart, string label)
+    {
+        var head = line[..spanStart];
+        if (InlineLabelRe().IsMatch(head.TrimEnd()))
+        {
+            return false; // colon-bound metric, e.g. "Total engineers: 24"
+        }
+
+        var words = LabelWordRe().Matches(head).Select(x => x.Value).ToList();
+        if (words.Count > 0 && ReferenceWords.Contains(words[^1].ToLowerInvariant()))
+        {
+            return true; // "Figure 4", "Section 23", "Page 7"
+        }
+
+        // Single Capitalized proper-noun label abutting the number → name/version ("Llama 2", "GPT 3").
+        return !label.Contains(' ', StringComparison.Ordinal) && label.Length > 0 && char.IsUpper(label[0]);
     }
 
     private static string LabelFor(string line, int spanStart)

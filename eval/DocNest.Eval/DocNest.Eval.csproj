@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>DocNest.Eval</RootNamespace>
+    <AssemblyName>docnest-eval</AssemblyName>
+    <IsPackable>false</IsPackable>
+    <!-- Standalone accuracy harness — not part of DocNest.sln, run via `dotnet run`.
+         Tests the SAME real files + question sets as the Python eval (eval/cases.json). -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DocNest.Abstractions\DocNest.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\DocNest.Core\DocNest.Core.csproj" />
+    <ProjectReference Include="..\..\src\DocNest.Parsers\DocNest.Parsers.csproj" />
+    <ProjectReference Include="..\..\src\DocNest.Retrieval\DocNest.Retrieval.csproj" />
+    <ProjectReference Include="..\..\src\DocNest.Query\DocNest.Query.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="cases.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

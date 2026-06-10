@@ -42,6 +42,26 @@ public class KeyNumberExtractorTests
     public void Dedups_same_label_and_value()
         => Ex("Uptime: 99.9%\nUptime: 99.9%").Where(k => k.Value == "99.9%").Should().HaveCount(1);
 
+    [Fact] // SLICE-08 D-C: name/version + structural references must not become key numbers.
+    public void Skips_name_version_and_structural_reference_numbers()
+    {
+        var kn = Ex("Llama 2\nFigure 4\nSection 23\nTable 5\nPage 7");
+        kn.Should().NotContain(k => k.Label == "Llama");
+        kn.Should().NotContain(k => k.Label == "Figure");
+        kn.Should().NotContain(k => k.Label == "Section");
+        kn.Should().NotContain(k => k.Label == "Table");
+        kn.Should().NotContain(k => k.Label == "Page");
+    }
+
+    [Fact] // SLICE-08 D-C: colon-bound and unit-bound metrics are still kept alongside references.
+    public void Keeps_colon_bound_and_unit_metrics_alongside_references()
+    {
+        var kn = Ex("See Figure 3 for details.\nTotal engineers: 24\nUptime 99.9%");
+        kn.Should().NotContain(k => k.Label == "Figure");
+        kn.Should().Contain(k => k.Label.Contains("engineers") && k.Value == "24");
+        kn.Should().Contain(k => k.Value == "99.9%");
+    }
+
     [Theory]
     [InlineData("$1.2 billion", 1.2e9)]
     [InlineData("18,400", 18400)]

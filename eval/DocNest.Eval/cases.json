@@ -1,0 +1,414 @@
+[
+  {
+    "format": "xlsx",
+    "file": "D:\\Learning\\docnest\\eval\\docs\\acme_financial.xlsx",
+    "questions": [
+      {
+        "q": "What was the total Q1 revenue across all products in USD thousands?",
+        "truth": "12,550"
+      },
+      {
+        "q": "Which product had the highest annual revenue and how much was it?",
+        "truth": "DataSync Pro with $23,400k"
+      },
+      {
+        "q": "How many total employees does the Engineering department have (full-time + part-time)?",
+        "truth": "150"
+      },
+      {
+        "q": "Which region had the highest year-over-year growth percentage?",
+        "truth": "Asia Pacific at 31.7%"
+      },
+      {
+        "q": "What is the NRR% for the Mid-Market customer segment?",
+        "truth": "118%"
+      },
+      {
+        "q": "What was SupportDesk's Q3 revenue and what was its full-year annual total in USD thousands?",
+        "truth": "SupportDesk Q3: 1,100 | Annual Total: 4,320"
+      },
+      {
+        "q": "Which month had the highest combined total revenue across all products in the Monthly Trend sheet?",
+        "truth": "Nov with $7,052k total"
+      },
+      {
+        "q": "What is the total ARR (in USD thousands) from Enterprise tier customers in the Top Accounts sheet?",
+        "truth": "$7,600k"
+      },
+      {
+        "q": "How many customer accounts are based in the Asia Pacific region?",
+        "truth": "6"
+      },
+      {
+        "q": "Which product had the highest annual gross margin percentage in the Product Margin sheet?",
+        "truth": "DataSync Pro at 75.4%"
+      },
+      {
+        "q": "What is the Net Revenue Retention (NRR) rate for Enterprise segment customers?",
+        "truth": "132%"
+      },
+      {
+        "q": "What was the total annual R&D expense and how does it compare to Sales & Marketing spend?",
+        "truth": "R&D: $210,000k; Sales & Marketing: $170,000k — R&D is $40,000k higher"
+      },
+      {
+        "q": "What was the total partnership channel revenue in 2024 and which partner type had the highest YoY growth?",
+        "truth": "Total partnership revenue: $38,700k; highest growth: Referral at 62.3%"
+      },
+      {
+        "q": "How many R&D projects have Priority P0 status and how many have been completed?",
+        "truth": "3 P0 projects; 3 completed projects"
+      },
+      {
+        "q": "What is the total revenue and YoY growth percentage for the System Integrator partner type?",
+        "truth": "$9,800k revenue | 41.2% YoY growth"
+      }
+    ]
+  },
+  {
+    "format": "docx",
+    "file": "D:\\Learning\\docnest\\eval\\docs\\techvision_annual.docx",
+    "questions": [
+      {
+        "q": "What was TechVision's total revenue in FY2024 and the year-over-year growth rate?",
+        "truth": "$1.24 billion, +34% YoY"
+      },
+      {
+        "q": "Which business segment became the largest revenue contributor for the first time?",
+        "truth": "Cloud Services with $621M"
+      },
+      {
+        "q": "What is the company's net income margin in FY2024?",
+        "truth": "15.1% ($187 million)"
+      },
+      {
+        "q": "What is the severity rating of the cybersecurity breach risk?",
+        "truth": "HIGH"
+      },
+      {
+        "q": "What is TechVision's FY2025 revenue guidance range?",
+        "truth": "$1.55–1.62 billion (+25–31% YoY)"
+      },
+      {
+        "q": "What percentage of TechVision's electricity came from renewable sources in 2024?",
+        "truth": "94%"
+      },
+      {
+        "q": "What is the estimated cost of the Zero-Trust Security Suite initiative?",
+        "truth": "$32 million, targeted for Q3 2025"
+      },
+      {
+        "q": "What is TechVision's estimated serviceable obtainable market size for enterprise cloud platforms?",
+        "truth": "$12 billion"
+      },
+      {
+        "q": "Which three countries are TechVision's priority international expansion targets for FY2025?",
+        "truth": "Germany, South Korea, and Australia"
+      },
+      {
+        "q": "What is TechVision's platform uptime and mean time to recover in FY2024?",
+        "truth": "99.97% uptime, 4.2 minutes mean time to recover"
+      },
+      {
+        "q": "What are the names and acquisition prices of the two companies TechVision acquired in FY2024?",
+        "truth": "Prism Analytics for $62M and SecureVault Inc. for $32M"
+      },
+      {
+        "q": "What is TechVision's LTV:CAC ratio and how does it compare to FY2023?",
+        "truth": "5.8× in FY2024, up from 4.2× in FY2023 (+38.1%)"
+      },
+      {
+        "q": "What is TechVision's Net Revenue Retention (NRR) rate in FY2024?",
+        "truth": "128%"
+      },
+      {
+        "q": "How many active compliance certifications does TechVision hold and which one covers payment processing?",
+        "truth": "6 active certifications; PCI DSS Level 1 covers payment processing (certified by Trustwave)"
+      }
+    ]
+  },
+  {
+    "format": "html",
+    "file": "D:\\Learning\\docnest\\eval\\docs\\nexusapi_docs.html",
+    "questions": [
+      {
+        "q": "What are the rate limits and price for the Pro plan?",
+        "truth": "1,000 req/min, 500,000 req/day, burst 2,000, $199/month"
+      },
+      {
+        "q": "How long do OAuth tokens last and how long are refresh tokens valid?",
+        "truth": "Access tokens: 3600 seconds (1 hour); refresh tokens: 30 days"
+      },
+      {
+        "q": "What HTTP method and endpoint is used to trigger AI parsing of a document?",
+        "truth": "POST /documents/{id}/parse (rate limited to 5/min)"
+      },
+      {
+        "q": "What happens if a webhook endpoint does not respond within 10 seconds?",
+        "truth": "Delivery is retried up to 5 times with exponential backoff starting at 30 seconds"
+      },
+      {
+        "q": "What is HTTP error code 429 in NexusAPI called, what causes it, and what is the recommended client handling strategy?",
+        "truth": "429 Too Many Requests — caused by rate limit exceeded — clients should implement exponential backoff"
+      },
+      {
+        "q": "What are the SDK package names and minimum runtime requirements for Python and JavaScript?",
+        "truth": "Python: nexus-sdk v3.4.1, requires Python 3.9+. JavaScript: @nexus/sdk v3.4.2, requires Node 18+"
+      },
+      {
+        "q": "What is the base URL for NexusAPI v3 and what version is documented?",
+        "truth": "Base URL: https://api.nexus.io/v3, Version 3.4.2"
+      },
+      {
+        "q": "What HTTP method and endpoint retrieves a paginated list of documents?",
+        "truth": "GET /documents (paginated, no rate limit specified beyond plan defaults)"
+      },
+      {
+        "q": "On which plan are API keys for server-to-server communication available?",
+        "truth": "Pro plan and above"
+      },
+      {
+        "q": "What is the daily request quota, burst limit, and monthly price for the Enterprise plan?",
+        "truth": "Unlimited daily requests, burst limit 20,000, Custom pricing"
+      },
+      {
+        "q": "How long is raw analytics event data retained for Pro plan customers?",
+        "truth": "90 days for raw event data; 2 years for aggregated summaries"
+      },
+      {
+        "q": "What permission role is required to manage workspace user permissions?",
+        "truth": "Workspace Admin (Admin role)"
+      },
+      {
+        "q": "When did the NexusAPI v2 reach end-of-life, and how long is each major version supported?",
+        "truth": "v2 reached end-of-life on December 31, 2024; major versions supported for 24 months after next major version release"
+      },
+      {
+        "q": "What are the available geographic regions for Enterprise data residency?",
+        "truth": "US-East, EU-West (Frankfurt), and AP-Southeast (Singapore)"
+      }
+    ]
+  },
+  {
+    "format": "md",
+    "file": "D:\\Learning\\docnest\\eval\\docs\\cloudmesh_spec.md",
+    "questions": [
+      {
+        "q": "What is CloudMesh's monthly data processing volume and uptime SLA?",
+        "truth": "2.4 petabytes per month, 99.95% uptime SLA"
+      },
+      {
+        "q": "What encryption standard is used for data at rest and how often are keys rotated?",
+        "truth": "AES-256-GCM at rest, TLS 1.3 in transit, key rotation every 90 days"
+      },
+      {
+        "q": "What is the RTO and RPO for Tier 1 services and what DR strategy is used?",
+        "truth": "RTO 15 min, RPO 1 min, Active-Passive strategy"
+      },
+      {
+        "q": "Which compliance certification covers payment flows and who is the auditor?",
+        "truth": "PCI DSS Level 1, audited by Coalfire (last audit August 2024)"
+      },
+      {
+        "q": "What was the total annual infrastructure cost in FY2024 and which category was largest?",
+        "truth": "$91.2 million total; Compute was largest at $38.4M (42.1%)"
+      },
+      {
+        "q": "What is the throughput and latency of the Stream Ingestor component?",
+        "truth": "850 MB/s throughput, less than 50ms latency, running on 24 instances (Apache Kafka 3.6)"
+      },
+      {
+        "q": "How many countries does CloudMesh serve and how many regional clusters does it run?",
+        "truth": "34 countries, 12 regional clusters"
+      },
+      {
+        "q": "What is the deployment frequency and mean time to deploy?",
+        "truth": "14.3 deployments per week average, 8 minutes mean time to deploy, rollback under 3 minutes"
+      },
+      {
+        "q": "What is the capacity and replication factor of the Hot Storage layer?",
+        "truth": "480 TB capacity, 3x replication, continuous backup (Apache Cassandra 4.1)"
+      },
+      {
+        "q": "What is the Tier 0 DR strategy and what services does it cover?",
+        "truth": "Active-Active strategy, RTO 5 min, RPO 0 min, covers Auth and API Gateway"
+      },
+      {
+        "q": "What is the SEV-1 incident response time and resolution target?",
+        "truth": "5-minute response time, 30-minute resolution target"
+      },
+      {
+        "q": "What is the API rate limit and burst limit for the Platinum tenant tier?",
+        "truth": "Unlimited API calls per minute, burst 50,000, 500 concurrent connections, P0 priority"
+      },
+      {
+        "q": "How many active Prometheus alert rules does CloudMesh have and what is the log retention period in Loki?",
+        "truth": "1,842 active Prometheus alert rules; Loki log retention is 90 days"
+      },
+      {
+        "q": "What is the data retention period for billing records and what is the deletion method?",
+        "truth": "7 years; stored as secure archive for tax compliance"
+      },
+      {
+        "q": "Which NA-East regional cluster has the lowest latency between primary and secondary data centers?",
+        "truth": "NA-East (us-east-1 to us-east-2) at 4ms inter-DC latency"
+      }
+    ]
+  },
+  {
+    "format": "pdf",
+    "file": "D:\\Learning\\docnest\\eval\\docs\\ipcc_spm.pdf",
+    "questions": [
+      {
+        "q": "What is the observed increase in global surface temperature compared to 1850–1900?",
+        "truth": "Global surface temperature increased by about 1.1°C (1.09°C) above the 1850–1900 baseline in the period 2011–2020. Each of the last four decades has been successively warmer than any preceding decade since 1850."
+      },
+      {
+        "q": "What is the remaining global carbon budget for limiting warming to 1.5°C and 2°C?",
+        "truth": "From the start of 2020, the remaining carbon budget is approximately 500 GtCO2 (some estimates range 300–900 GtCO2) for limiting warming to 1.5°C with 50% likelihood, and around 1150 GtCO2 for limiting warming to 2°C with 67% likelihood. At current global emission rates of roughly 40 GtCO2/year, the 1.5°C budget could be exhausted within about a decade."
+      },
+      {
+        "q": "What does the report say about limiting warming to 1.5°C — is it still achievable?",
+        "truth": "Limiting warming to 1.5°C is still achievable but requires immediate, rapid and deep emissions reductions in all sectors this decade. Modelled pathways with no or limited overshoot require global GHG emissions to peak before 2025 at the latest and be reduced by about 43% by 2030 relative to 2019 levels. Delayed action makes the target progressively harder or impossible to meet."
+      },
+      {
+        "q": "What are the projected sea level rise ranges mentioned in the report for mid-century and end of century?",
+        "truth": "The IPCC projects global mean sea level rise of 0.15–0.23 m by 2050 and 0.28–0.55 m by 2100 under intermediate emissions scenarios. Under high-emission scenarios, sea level could rise 0.6–1.0 m by 2100. Under very high emissions, multi-metre rise beyond 2100 cannot be ruled out."
+      },
+      {
+        "q": "How does the report link climate change to extreme weather events?",
+        "truth": "Human-caused climate change has already increased the frequency and intensity of many extreme weather events globally. The report states it is an established fact that climate change affects heat waves, heavy rainfall and flooding, droughts, and intense tropical cyclones. Climate attribution studies can link specific extreme events to human influence on the climate system."
+      }
+    ]
+  },
+  {
+    "format": "pdf",
+    "file": "D:\\Learning\\docnest\\eval\\docs\\bis_2024.pdf",
+    "questions": [
+      {
+        "q": "What does the BIS 2024 report say about the disinflation process and how global inflation receded from its peak?",
+        "truth": "Global inflation continued to recede from the peak it reached in 2022, driven by declining commodity prices and demand normalization. The sustained disinflation opened the door to a monetary policy easing cycle, though services inflation remained elevated above central bank targets in many advanced economies, making the final leg of disinflation harder."
+      },
+      {
+        "q": "What does the BIS 2024 report say about central bank policy actions taken to address high inflation?",
+        "truth": "The BIS 2024 report describes how major central banks engaged in forceful monetary policy tightening, raising interest rates rapidly and significantly to combat elevated inflation. This tightening was effective: inflation receded substantially from its 2022 peak across most advanced economies by 2023-2024. The BIS notes that central banks kept policy rates at elevated, restrictive levels and that the speed and scale of the tightening was historically significant in restoring price stability."
+      },
+      {
+        "q": "What specific financial stability risks does the BIS highlight related to high interest rates and debt in 2024?",
+        "truth": "The BIS highlights macro-financial pressure points from the combination of higher interest rates and historically high public and private debt levels, stress in commercial real estate (CRE) markets, vulnerabilities in non-bank financial intermediaries (NBFIs) with liquidity mismatches, and sovereign debt sustainability concerns in emerging markets."
+      },
+      {
+        "q": "What financial stability risks does the BIS identify relating to asset price volatility, herding behavior, and concentration risk in financial markets?",
+        "truth": "The BIS identifies that widespread adoption of similar AI-driven trading models can induce herding behavior and correlated portfolio adjustments, amplifying asset price volatility. Concentration risk arises from dependence on a small number of large technology providers for AI infrastructure, creating systemic single-points of failure."
+      },
+      {
+        "q": "What fiscal pressure points does the BIS 2024 report identify, and what fiscal policy stance does it recommend?",
+        "truth": "The BIS 2024 report identifies fiscal pressure points including expansionary fiscal policies that could become a source of tension with monetary policy objectives. The report recommends fiscal consolidation as an absolute priority to rebuild near-term policy space and reduce macro-financial pressure. Greater public spending demands with dwindling fiscal space pose a key risk."
+      }
+    ]
+  },
+  {
+    "format": "pdf",
+    "file": "D:\\Learning\\docnest\\eval\\docs\\gpt3_paper.pdf",
+    "questions": [
+      {
+        "q": "What are ALL the parameter sizes of GPT-3 models presented in the paper? List every model variant explicitly from smallest to largest.",
+        "truth": "The largest GPT-3 model has 175 billion parameters. The paper also presents smaller variants with 125M, 350M, 760M, 1.3B, 2.7B, 6.7B, and 13B parameters."
+      },
+      {
+        "q": "What are the training corpora (Common Crawl, WebText2, Books, Wikipedia) used for GPT-3 and what are the dataset weights?",
+        "truth": "GPT-3 is trained on: filtered Common Crawl (410B tokens, 60% weight), WebText2 (19B tokens, 22% weight), Books1 (12B tokens, 8% weight), Books2 (55B tokens, 8% weight), and Wikipedia (3B tokens, 3% weight). Training runs for ~300B tokens total with sampling proportional to weights."
+      },
+      {
+        "q": "How does GPT-3's architecture compare to GPT-2? What are the number of layers, attention heads, d_model, context window, and batch size for the largest GPT-3 model (175B)?",
+        "truth": "GPT-3 uses the same Transformer decoder architecture as GPT-2 but at vastly larger scale. The largest GPT-3 model (175B parameters) has 96 transformer layers, 96 attention heads, and a model dimension (d_model) of 12288. It uses a context window of 2048 tokens and a batch size of 3.2 million tokens. GPT-3 also uses alternating dense and locally banded sparse attention in the layers, following the Sparse Transformer design."
+      },
+      {
+        "q": "How many in-context examples are used in GPT-3's zero-shot, one-shot, and few-shot evaluation modes?",
+        "truth": "Zero-shot uses 0 demonstrations (task description only); one-shot uses exactly 1 example; few-shot uses as many examples as fit in the 2048-token context window, typically 10–100 examples depending on task prompt length."
+      },
+      {
+        "q": "What limitations and risks does the GPT-3 paper acknowledge?",
+        "truth": "The GPT-3 paper acknowledges limitations including poor sample efficiency compared to humans, weakness on fine-grained tasks such as arithmetic and novel word use, and potential for harmful bias in generated text (e.g. gender, race stereotypes). It warns of misuse risks including generating disinformation at scale. The paper notes that GPT-3 still has interpretability limitations despite its few-shot capabilities."
+      }
+    ]
+  },
+  {
+    "format": "pdf",
+    "file": "D:\\Learning\\docnest\\eval\\docs\\attention_paper.pdf",
+    "questions": [
+      {
+        "q": "How many attention heads does the Transformer base model use, and how many encoder/decoder layers does it have?",
+        "truth": "The Transformer base model uses h=8 parallel attention heads and has 6 encoder layers and 6 decoder layers. The big model uses h=16 heads. The base model has d_model=512, d_k=d_v=64."
+      },
+      {
+        "q": "What EN-DE BLEU scores do the Transformer base and big models achieve on WMT 2014 English-to-German translation?",
+        "truth": "Transformer base achieves 27.3 BLEU and Transformer big achieves 28.4 BLEU on WMT 2014 EN-DE, surpassing all previously reported models including ensembles. Transformer big also achieves 41.0 BLEU on EN-FR."
+      },
+      {
+        "q": "What training data and hardware were used to train the Transformer models, and how long did training take?",
+        "truth": "The Transformer's primary training used WMT 2014 English-German and English-French translation datasets with byte-pair encoding on 8 NVIDIA P100 GPUs (~12 hours for the base model, ~3.5 days for the big model). The paper also tests the Transformer on English constituency parsing using the Penn Treebank WSJ dataset (about 40K training sentences), showing the architecture generalizes beyond machine translation."
+      },
+      {
+        "q": "What are the per-layer computational complexities of self-attention and recurrent layers (from Table 1), and under what condition is self-attention more efficient?",
+        "truth": "Self-Attention: O(n²·d) per layer, O(1) sequential operations. Recurrent (RNN): O(n·d²) per layer, O(n) sequential operations. Self-attention is more computationally efficient than recurrent layers when sequence length n is smaller than representation dimensionality d."
+      },
+      {
+        "q": "What regularization techniques are applied during Transformer training according to the method description? What is the standard dropout rate (P_drop) described in the training procedure section?",
+        "truth": "Two main regularization techniques: (1) Residual Dropout with P_drop=0.1 applied to the output of each sub-layer before adding to the residual, and also to the sums of embeddings and positional encodings; (2) Label Smoothing with ε_ls=0.1 during training, which hurts perplexity but improves accuracy and BLEU score."
+      }
+    ]
+  },
+  {
+    "format": "pdf",
+    "file": "D:\\Learning\\docnest\\eval\\docs\\llama2_paper.pdf",
+    "questions": [
+      {
+        "q": "What are ALL the parameter sizes of the Llama 2 model family? List every size explicitly, including any that are evaluated less extensively.",
+        "truth": "Llama 2 comes in 7B, 13B, 34B, and 70B parameter sizes. Chat variants (Llama 2-Chat) are fine-tuned versions optimized for dialogue using RLHF. The 34B model is included in the release but evaluated less extensively than 7B, 13B, and 70B."
+      },
+      {
+        "q": "How does Llama 2-Chat 70B compare to ChatGPT (GPT-3.5) on human preference evaluations?",
+        "truth": "On human preference evaluations, Llama 2-Chat 70B is statistically competitive with ChatGPT (GPT-3.5-turbo), with win rates within the margin of error on both helpfulness and safety axes. ChatGPT scores slightly higher on MT-bench (7.81 vs approximately 6.27 for Llama 2-Chat 70B)."
+      },
+      {
+        "q": "What context length do Llama 2 models support, and how was it doubled from Llama 1?",
+        "truth": "Llama 2 supports a context length of 4096 tokens, double Llama 1's 2048 tokens. The context length was increased by training on longer sequences, allowing Llama 2 to handle significantly longer documents and multi-turn conversations compared to Llama 1."
+      },
+      {
+        "q": "How were the reward models for Llama 2-Chat RLHF trained, and how many human preference annotations were collected?",
+        "truth": "Two separate reward models were trained for Llama 2-Chat: a helpfulness reward model and a safety reward model. Meta collected over 1 million human preference annotations by presenting annotators with pairs of model responses and asking them to choose the better one based on helpfulness and safety criteria. The reward models were trained iteratively, with newer annotation batches from improved model versions added over time to keep the reward model up to date."
+      },
+      {
+        "q": "What is RLHF Ghost Attention (GAtt) and what problem does it solve in Llama 2-Chat?",
+        "truth": "Ghost Attention (GAtt) is a fine-tuning technique that hacks training data by appending the system prompt to every user message in the conversation, forcing the model to attend to initial instructions across all turns. It solves the problem of models forgetting their system prompt constraints after several conversation turns in multi-turn dialogue."
+      }
+    ]
+  },
+  {
+    "format": "pdf",
+    "file": "D:\\Learning\\docnest\\eval\\docs\\constitutional_ai.pdf",
+    "questions": [
+      {
+        "q": "What is the core idea behind Constitutional AI and what problem does it solve vs standard RLHF?",
+        "truth": "Constitutional AI trains a harmless AI using a small set of written principles (the 'constitution') rather than large-scale human-labeled harmlessness data. The AI critiques and revises its own outputs based on these principles. This solves the bottleneck and inconsistency of human safety labeling in standard RLHF."
+      },
+      {
+        "q": "What two training phases make up the Constitutional AI method (SL-CAI and RLHF-CAI)?",
+        "truth": "Phase 1 (SL-CAI): supervised learning where a model critiques its own harmful responses using constitutional principles, revises them, then fine-tunes on the revised responses. Phase 2 (RLHF-CAI): a preference model is trained using AI-generated comparison labels (not human labels), then the policy is fine-tuned via RL against this preference model."
+      },
+      {
+        "q": "How does the paper evaluate harmlessness vs helpfulness, and what does the Elo ranking show?",
+        "truth": "Evaluation uses crowdworker Elo scores comparing model outputs. The RLHF-CAI model achieves higher Elo scores on both harmlessness AND helpfulness simultaneously compared to models trained with standard RLHF on human feedback, demonstrating that the harmlessness-helpfulness tradeoff can be reduced with constitutional training."
+      },
+      {
+        "q": "What is the 'critique and revision' step in Constitutional AI and how does it work?",
+        "truth": "In the SL-CAI phase, the model is prompted to critique its initial response by identifying how it might be harmful according to a specific constitutional principle, then writes a revised response that corrects the identified issues. This critique-revision process can be repeated for multiple principles, producing progressively safer responses that are then used as supervised fine-tuning data."
+      },
+      {
+        "q": "What does the Constitutional AI paper show about whether AI-generated harmlessness labels can replace human labels effectively?",
+        "truth": "The paper demonstrates that AI-generated preference labels (from a feedback model evaluating responses against constitutional principles) can effectively replace human harmlessness labels in RLHF. The RLHF-CAI model trained entirely on AI feedback achieves better harmlessness Elo scores than models trained on human harmlessness data, while also maintaining comparable or better helpfulness. This shows that human annotation of harmful content can be largely eliminated through AI feedback, scaling safety training without human bottlenecks."
+      }
+    ]
+  }
+]

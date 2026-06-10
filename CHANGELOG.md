@@ -3,6 +3,25 @@
 All notable changes to **DocNest .NET** are documented here. Format based on
 [Keep a Changelog](https://keepachangelog.com/); the project adopts SemVer at its first NuGet release.
 
+## [0.1.1] - 2026-06-10
+
+### Fixed — Slice 8: query-engine accuracy parity (escalation + key-number misfire)
+- **Escalation confidence (ADR-0011).** `DocNestQueryEngine` previously returned the first extractive
+  snippet **unconditionally**, so ~80/88 eval questions were answered at 0 tokens and never reached the
+  LLM. It now gates Layer 1 on an absolute, bounded **query-term-recall confidence** over the top section
+  (RRF still does ranking — its rank-fusion score is not an absolute confidence). Below the threshold the
+  engine escalates to the LLM layers; a Layer-2 "Not found" now falls through to multi-section synthesis
+  instead of dead-ending.
+- **Key-number noise gate.** `KeyNumberExtractor` no longer emits bare name/version or structural-reference
+  counts (`"Llama 2"`, `"Figure 4"`, `"Section 23"`) that were misfiring as confident Layer-0 answers on PDFs.
+- **Accuracy** on the Python-parity eval (same 10 files / 88 questions, gpt-oss-120b): overall **5.1 → 6.7/10**,
+  Phase-1 hit-rate 53% → 72%, Phase-2 (PDF) hit-rate 20% → 47%. Public API and `.udf` contract unchanged.
+- **Eval harness** (`eval/DocNest.Eval`) now runs the exact Python reference documents + question sets
+  (`eval/cases.json`), with a rate-limit-resilient LLM provider. Tests: +6 (escalation gate, Layer-2→3
+  fallback, key-number misfire). Full suite green (153 pass).
+- Note: closing the remaining gap to the Python 8.5 needs follow-up slices — dense embeddings in retrieval
+  (the .NET eval pipeline is currently BM25-only) and an LLM-as-judge option in the eval.
+
 ## [0.1.0] - 2026-06-10
 
 First public release of **DocNest for .NET** — an idiomatic port of the Python `docnest` engine. The
