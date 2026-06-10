@@ -3,7 +3,20 @@
 All notable changes to **DocNest .NET** are documented here. Format based on
 [Keep a Changelog](https://keepachangelog.com/); the project adopts SemVer at its first NuGet release.
 
-## [Unreleased]
+## [0.1.0] - 2026-06-10
+
+First public release of **DocNest for .NET** — an idiomatic port of the Python `docnest` engine. The
+complete RAG loop: **ingest (md/html/csv/docx/xlsx/pdf) → `.udf` → retrieve → answer**, plus a `docnest`
+CLI and per-assembly NuGet packages. `.udf` files are cross-compatible with the Python implementation.
+
+### Added — Slice 7: CLI + NuGet packaging
+- **`DocNest.Cli`** — a `dotnet tool` (`docnest`) with `convert` (document → `.udf`), `query` (`.udf`/file +
+  question → 5-layer answer), and `info` (catalogue summary). Logic in testable handlers; `System.CommandLine`
+  confined to `Program.cs`. Composes the engine with no new library dependencies.
+- **Per-assembly NuGet packages** with shared metadata (MIT, repository URL, README, symbols/snupkg, XML docs):
+  `DocNest.Abstractions/Core/Storage/Parsers/Retrieval/Embeddings/Query` + the `DocNest.Cli` tool, at `0.1.0`.
+- **Tests** — +3 (CLI `convert→info→query` round-trip, error exit codes, provider factory). ADR-0010.
+- Publishing to nuget.org is a separate, explicit owner step (see the release runbook).
 
 ### Added — Slice 6b: LLM providers + 5-layer answer engine (RAG loop complete)
 - **`DocNest.Query`** (new assembly) — `DocNestQueryEngine`: Layer 0 deterministic (key-number /

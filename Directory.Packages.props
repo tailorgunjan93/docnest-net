@@ -18,6 +18,8 @@
     <PackageVersion Include="Microsoft.Data.Sqlite" Version="8.0.10" />
     <!-- ONNX inference for the MiniLM embedder (DocNest.Embeddings only). MIT. -->
     <PackageVersion Include="Microsoft.ML.OnnxRuntime" Version="1.19.2" />
+    <!-- CLI parsing (DocNest.Cli only). MIT; pinned to the stable SetHandler API. -->
+    <PackageVersion Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
   </ItemGroup>
 
   <!-- Test-only dependencies. The core libraries have ZERO runtime package dependencies. -->

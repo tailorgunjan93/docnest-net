@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>DocNest.Cli</RootNamespace>
+    <AssemblyName>docnest</AssemblyName>
+    <PackageId>DocNest.Cli</PackageId>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>docnest</ToolCommandName>
+    <Description>DocNest command-line tool — convert documents to .udf and query them (5-layer RAG).</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DocNest.Core\DocNest.Core.csproj" />
+    <ProjectReference Include="..\DocNest.Parsers\DocNest.Parsers.csproj" />
+    <ProjectReference Include="..\DocNest.Retrieval\DocNest.Retrieval.csproj" />
+    <ProjectReference Include="..\DocNest.Query\DocNest.Query.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.CommandLine" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="DocNest.Cli.Tests" />
+  </ItemGroup>
+
+</Project>

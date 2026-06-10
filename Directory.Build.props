@@ -13,6 +13,31 @@
     <Deterministic>true</Deterministic>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisLevel>latest-recommended</AnalysisLevel>
+
+    <!-- XML docs for packages; don't fail on members that lack them yet. -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
+
+  <!-- Shared NuGet package metadata (test projects set IsPackable=false, so they ignore this). -->
+  <PropertyGroup>
+    <Version>0.1.0</Version>
+    <Authors>SynapseAI</Authors>
+    <Company>SynapseAI</Company>
+    <Product>DocNest</Product>
+    <Description>DocNest — the document normalisation engine RAG has always needed, native for .NET. Read structure before content; emit a portable .udf knowledge base. Secure · Fast · Reliable · Cost-Effective.</Description>
+    <PackageProjectUrl>https://github.com/tailorgunjan93/docnest</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/tailorgunjan93/docnest</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>rag;document-ai;nlp;embeddings;udf;retrieval;bm25;onnx</PackageTags>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup Condition="Exists('$(MSBuildThisFileDirectory)README.md')">
+    <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" Visible="false" />
+  </ItemGroup>
 
 </Project>

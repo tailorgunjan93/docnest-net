@@ -10,7 +10,8 @@
 > **Slice 4c (PDF text parser): ✅ shipped to `main` (`v0.0.6-pdf`, 107 pass / 2 skip) — all 6 common formats ingest.**
 > **Slice 5 (hybrid retrieval): ✅ shipped to `main` (`v0.0.7-retrieval`, 118 pass / 2 skip).**
 > **Slice 6a (embeddings: ONNX MiniLM + Quantizer): ✅ shipped to `main` (`v0.0.8-embeddings`, 134 pass / 4 skip).**
-> **Currently active: Slice 6b (LLM providers + 5-layer answer engine), at GATE 0 — see [phase0/SLICE-6B-ROADMAP.md](phase0/SLICE-6B-ROADMAP.md). Completing 6b = the full RAG loop. Then 7 (CLI+NuGet).**
+> **Slice 6b (LLM providers + 5-layer answer engine): ✅ shipped to `main` (`v0.0.9-query`, 145 pass / 5 skip) — full RAG loop complete.**
+> **Currently active: Slice 7 (CLI + NuGet packaging — the finish line), at GATE 0 — see [phase0/SLICE-07-ROADMAP.md](phase0/SLICE-07-ROADMAP.md). Publishing to nuget.org is a separate owner-triggered step.**
 
 ## Program slices (ordered, with dependencies)
 
