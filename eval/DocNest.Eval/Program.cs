@@ -46,12 +46,15 @@ ILlmProvider? llm = string.IsNullOrEmpty(apiKey)
         Environment.GetEnvironmentVariable("DOCNEST_LLM_BASE_URL") ?? "https://api.openai.com/v1"));
 var allowLlm = llm is not null;
 
+// ── Answer judge (Layer scoring). LLM-as-judge when DOCNEST_JUDGE_API_KEY is set, else local. ────
+var judge = JudgeFactory.Create();
+
 var report = new StringBuilder();
 void Line(string s = "") { Console.WriteLine(s); report.AppendLine(s); }
 
 Line("# DocNest .NET — multi-format RAG accuracy eval (Python parity)");
 Line($"_Generated {DateTime.UtcNow:yyyy-MM-dd HH:mm} UTC · {cases.Count} documents, " +
-     $"{cases.Sum(c => c.Questions.Count)} questions · judge: local (number ±6% + keyword + phrase overlap, hit = score ≥ 7)_");
+     $"{cases.Sum(c => c.Questions.Count)} questions · judge: {judge.Name} (hit = score ≥ 7)_");
 Line(allowLlm
     ? $"_Mode: **LLM-assisted** (Layers 2-4 enabled via {Environment.GetEnvironmentVariable("DOCNEST_LLM_MODEL") ?? "gpt-4o-mini"})_"
     : "_Mode: **deterministic floor** (0 LLM tokens — set `DOCNEST_LLM_API_KEY` to enable Layers 2-4)_");
@@ -91,7 +94,7 @@ async Task<(double Avg, double Hit)> RunPhase(string title, List<EvalCase> group
         foreach (var qa in c.Questions)
         {
             var result = await engine.AnswerAsync(document, qa.Q, allowLlm);
-            var (score, _) = LocalJudge.Score(qa.Q, result.Answer, qa.Truth);
+            var (score, _) = await judge.ScoreAsync(qa.Q, result.Answer, qa.Truth);
             fileScores.TryAdd(name, new List<int>());
             fileScores[name].Add(score);
             allScores.Add(score);
