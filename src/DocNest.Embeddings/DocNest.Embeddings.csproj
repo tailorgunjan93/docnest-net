@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>DocNest.Embeddings</RootNamespace>
+    <AssemblyName>DocNest.Embeddings</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DocNest.Abstractions\DocNest.Abstractions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- ONNX inference — kept behind the OnnxEmbedder (IEmbedder) wrapper. -->
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" />
+  </ItemGroup>
+
+</Project>

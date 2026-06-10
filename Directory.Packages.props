@@ -16,6 +16,8 @@
     <PackageVersion Include="PdfPig" Version="0.1.14" />
     <!-- SQLite for the retrieval cache (DocNest.Retrieval only). MIT; bundles FTS5. -->
     <PackageVersion Include="Microsoft.Data.Sqlite" Version="8.0.10" />
+    <!-- ONNX inference for the MiniLM embedder (DocNest.Embeddings only). MIT. -->
+    <PackageVersion Include="Microsoft.ML.OnnxRuntime" Version="1.19.2" />
   </ItemGroup>
 
   <!-- Test-only dependencies. The core libraries have ZERO runtime package dependencies. -->

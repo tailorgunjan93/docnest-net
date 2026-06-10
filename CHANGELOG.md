@@ -5,6 +5,18 @@ All notable changes to **DocNest .NET** are documented here. Format based on
 
 ## [Unreleased]
 
+### Added — Slice 6a: embeddings (ONNX MiniLM) + quantizer
+- **`DocNest.Core/Quantization`** — `Quantizer` (float32/float16/int8/binary), ported byte-for-byte from
+  numpy (float16 IEEE-half LE, int8 scaled+truncated, binary MSB-first packbits) — the `.udf`
+  `embeddings.bin` cross-ecosystem layout. `Stride`/`BytesPerElement`/`CosineSimilarity`. Zero dependency.
+- **`DocNest.Embeddings`** (new assembly) — `OnnxEmbedder` (`IEmbedder`): WordPiece tokenize → ONNX
+  Runtime inference → mean-pool with mask → L2-normalise → 384-dim, batched; `WordPieceTokenizer`
+  (hand-rolled, zero extra dep); `MiniLmModel` (paths + opt-in Hugging Face download).
+- **Dependency:** `Microsoft.ML.OnnxRuntime` (MIT) — embeddings only, behind the `OnnxEmbedder` wrapper.
+- **Tests** — +16 Quantizer (always run, incl. byte-layout parity) + 2 gated ONNX real-inference tests
+  (`[SkippableFact]`; skip until the ~90 MB model is provisioned). ADR-0008.
+- The real embedder now plugs into the Slice-5 retriever and the Slice-2 `.udf` writer. LLM + answer engine = Slice 6b.
+
 ### Added — Slice 5: hybrid retrieval engine
 - **`DocNest.Retrieval`** (new assembly) — `HybridRetriever` (`IRetriever`): SQLite FTS5 BM25 + dense
   cosine (over an injected `IEmbedder`) + RRF fusion (K=60, BM25 2.0, Dense 1.5) + 1-hop section-graph
