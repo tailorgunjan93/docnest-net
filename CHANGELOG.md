@@ -5,6 +5,16 @@ All notable changes to **DocNest .NET** are documented here. Format based on
 
 ## [Unreleased]
 
+### Added — Slice 6b: LLM providers + 5-layer answer engine (RAG loop complete)
+- **`DocNest.Query`** (new assembly) — `DocNestQueryEngine`: Layer 0 deterministic (key-number /
+  summary / insight) → Layer 1 extractive (0 tokens) → Layers 2–4 LLM (single / multi / full doc), using
+  the Slice-5 `IRetriever` + `ILlmProvider`; `KeyNumberMatcher` + `Extractive` (ported). `QueryResult` in Abstractions.
+- **LLM providers** — `OpenAiCompatibleLlmProvider` (`/chat/completions`; OpenAI/Groq/Together/OpenRouter/
+  local) and `AnthropicLlmProvider` (`/v1/messages`). HTTP via the BCL — **zero new package dependencies**.
+- **Tests** — +12 (deterministic layers; engine layer-routing + token/citation wiring with a fake provider;
+  both providers via a stubbed `HttpMessageHandler`; gated real-endpoint test). ADR-0009.
+- **Completes the RAG loop:** ingest (6 formats) → `.udf` → retrieve → answer.
+
 ### Added — Slice 6a: embeddings (ONNX MiniLM) + quantizer
 - **`DocNest.Core/Quantization`** — `Quantizer` (float32/float16/int8/binary), ported byte-for-byte from
   numpy (float16 IEEE-half LE, int8 scaled+truncated, binary MSB-first packbits) — the `.udf`

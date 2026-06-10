@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>DocNest.Query</RootNamespace>
+    <AssemblyName>DocNest.Query</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DocNest.Abstractions\DocNest.Abstractions.csproj" />
+  </ItemGroup>
+
+  <!-- Zero runtime package dependencies — HTTP via the BCL (System.Net.Http.Json). -->
+
+</Project>
