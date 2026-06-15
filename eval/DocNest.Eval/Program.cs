@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using DocNest;
+using DocNest.Embeddings;
 using DocNest.Eval;
 using DocNest.Parsers;
 using DocNest.Pipeline;
@@ -46,6 +47,96 @@ ILlmProvider? llm = string.IsNullOrEmpty(apiKey)
         Environment.GetEnvironmentVariable("DOCNEST_LLM_BASE_URL") ?? "https://api.openai.com/v1"));
 var allowLlm = llm is not null;
 
+// ── Dense embeddings (Slice 10): activate the HybridRetriever dense + semantic-graph path. ───────
+// Opt-in: needs the MiniLM ONNX model provisioned. With no model the eval runs the existing
+// BM25-only retrieval path (graceful degrade — ADR-0007/0008/0012). One shared embedder, reused
+// across all docs (the ONNX session is the expensive object) and disposed after both phases.
+var (embedder, retrievalMode) = await TryBuildEmbedderAsync();
+
+async Task<(OnnxEmbedder? Embedder, string Mode)> TryBuildEmbedderAsync()
+{
+    var cacheDir = Environment.GetEnvironmentVariable("DOCNEST_MINILM_CACHE");
+    if (string.IsNullOrEmpty(cacheDir))
+    {
+        var dir = AppContext.BaseDirectory;
+        while (dir is not null && !File.Exists(Path.Combine(dir, "DocNest.sln")))
+        {
+            dir = Directory.GetParent(dir)?.FullName;
+        }
+        cacheDir = Path.Combine(dir ?? AppContext.BaseDirectory, "artifacts", "minilm-cache");
+    }
+    try
+    {
+        string modelPath, vocabPath;
+        if (MiniLmModel.IsPresent(cacheDir))
+        {
+            (modelPath, vocabPath) = MiniLmModel.Paths(cacheDir);
+        }
+        else if (string.Equals(Environment.GetEnvironmentVariable("DOCNEST_DOWNLOAD_MODEL"), "1", StringComparison.Ordinal))
+        {
+            Console.Error.WriteLine($"Provisioning MiniLM model into {cacheDir} (~90 MB, one-time)…");
+            (modelPath, vocabPath) = await MiniLmModel.EnsureDownloadedAsync(cacheDir);
+        }
+        else
+        {
+            return (null, $"BM25-only — no embedder (MiniLM model absent in {cacheDir}; " +
+                          "set DOCNEST_DOWNLOAD_MODEL=1 to fetch it (~90 MB), or DOCNEST_MINILM_CACHE to point at it)");
+        }
+        var built = new OnnxEmbedder(modelPath, vocabPath);
+        return (built, $"BM25 + dense ({built.ModelName})");
+    }
+    catch (Exception ex)
+    {
+        // Never abort the eval over the embedder — degrade to the BM25-only path with a notice.
+        return (null, $"BM25-only — embedder unavailable ({ex.GetType().Name}: {ex.Message.ReplaceLineEndings(" ")})");
+    }
+}
+
+// ── Cross-encoder reranker (Slice 11, ADR-0013): reorder the top candidates for precision. ───────
+// Opt-in like the embedder; absent → retrieval is dense+RRF only (graceful degrade). Shared, disposed later.
+var reranker = await TryBuildRerankerAsync();
+if (reranker is not null)
+{
+    retrievalMode += $" + rerank ({reranker.ModelName})";
+}
+
+async Task<OnnxCrossEncoderReranker?> TryBuildRerankerAsync()
+{
+    var cacheDir = Environment.GetEnvironmentVariable("DOCNEST_MSMARCO_CACHE");
+    if (string.IsNullOrEmpty(cacheDir))
+    {
+        var dir = AppContext.BaseDirectory;
+        while (dir is not null && !File.Exists(Path.Combine(dir, "DocNest.sln")))
+        {
+            dir = Directory.GetParent(dir)?.FullName;
+        }
+        cacheDir = Path.Combine(dir ?? AppContext.BaseDirectory, "artifacts", "ms-marco-cache");
+    }
+    try
+    {
+        string modelPath, vocabPath;
+        if (CrossEncoderModel.IsPresent(cacheDir))
+        {
+            (modelPath, vocabPath) = CrossEncoderModel.Paths(cacheDir);
+        }
+        else if (string.Equals(Environment.GetEnvironmentVariable("DOCNEST_DOWNLOAD_MODEL"), "1", StringComparison.Ordinal))
+        {
+            Console.Error.WriteLine($"Provisioning cross-encoder model into {cacheDir} (~91 MB, one-time)…");
+            (modelPath, vocabPath) = await CrossEncoderModel.EnsureDownloadedAsync(cacheDir);
+        }
+        else
+        {
+            return null;
+        }
+        return new OnnxCrossEncoderReranker(modelPath, vocabPath);
+    }
+    catch (Exception ex)
+    {
+        Console.Error.WriteLine($"  reranker unavailable ({ex.GetType().Name}: {ex.Message.ReplaceLineEndings(" ")}) — continuing without rerank.");
+        return null;
+    }
+}
+
 // ── Answer judge (Layer scoring). LLM-as-judge when DOCNEST_JUDGE_API_KEY is set, else local. ────
 var judge = JudgeFactory.Create();
 
@@ -58,6 +149,7 @@ Line($"_Generated {DateTime.UtcNow:yyyy-MM-dd HH:mm} UTC · {cases.Count} docume
 Line(allowLlm
     ? $"_Mode: **LLM-assisted** (Layers 2-4 enabled via {Environment.GetEnvironmentVariable("DOCNEST_LLM_MODEL") ?? "gpt-4o-mini"})_"
     : "_Mode: **deterministic floor** (0 LLM tokens — set `DOCNEST_LLM_API_KEY` to enable Layers 2-4)_");
+Line($"_Retrieval: **hybrid** — {retrievalMode}_");
 Line();
 
 async Task<(double Avg, double Hit)> RunPhase(string title, List<EvalCase> group)
@@ -88,22 +180,33 @@ async Task<(double Avg, double Hit)> RunPhase(string title, List<EvalCase> group
             continue;
         }
 
-        using var retriever = new HybridRetriever(Path.Combine(work, $"cache_{name}"));
+        using var retriever = new HybridRetriever(Path.Combine(work, $"cache_{name}"), embedder, reranker);
         var engine = new DocNestQueryEngine(retriever, llm);
 
         foreach (var qa in c.Questions)
         {
-            var result = await engine.AnswerAsync(document, qa.Q, allowLlm);
-            var (score, _) = await judge.ScoreAsync(qa.Q, result.Answer, qa.Truth);
-            fileScores.TryAdd(name, new List<int>());
-            fileScores[name].Add(score);
-            allScores.Add(score);
-            totalTokens += result.TokensUsed;
-
             var q = qa.Q.Length > 58 ? qa.Q[..58] + "…" : qa.Q;
-            var answer = result.Answer.ReplaceLineEndings(" ").Trim();
-            if (answer.Length > 70) answer = answer[..70] + "…";
-            Line($"| {name} | {q} | {result.LayerUsed} | {result.TokensUsed} | {score}/10 | {answer} |");
+            try
+            {
+                var result = await engine.AnswerAsync(document, qa.Q, allowLlm);
+                var (score, _) = await judge.ScoreAsync(qa.Q, result.Answer, qa.Truth);
+                fileScores.TryAdd(name, new List<int>());
+                fileScores[name].Add(score);
+                allScores.Add(score);
+                totalTokens += result.TokensUsed;
+
+                var answer = result.Answer.ReplaceLineEndings(" ").Trim();
+                if (answer.Length > 70) answer = answer[..70] + "…";
+                Line($"| {name} | {q} | {result.LayerUsed} | {result.TokensUsed} | {score}/10 | {answer} |");
+            }
+            catch (Exception ex)
+            {
+                // A single question must never abort the whole eval — score 0 and keep going.
+                fileScores.TryAdd(name, new List<int>());
+                fileScores[name].Add(0);
+                allScores.Add(0);
+                Line($"| {name} | {q} | — | 0 | 0/10 | _ERROR: {ex.GetType().Name}: {ex.Message.ReplaceLineEndings(" ")}_ |");
+            }
         }
     }
 
@@ -121,19 +224,31 @@ async Task<(double Avg, double Hit)> RunPhase(string title, List<EvalCase> group
     return (avg, hit);
 }
 
-var p1 = await RunPhase("Phase 1 — generated files (xlsx · docx · html · md)", generated);
-var p2 = await RunPhase("Phase 2 — real PDFs (IPCC · BIS · GPT-3 · Attention · Llama 2 · Constitutional AI)", pdfs);
+// Phase selector: `dotnet run -- pdf` (or DOCNEST_EVAL_PHASE=pdf) runs the PDFs only; `generated`
+// runs the generated files only; unset runs both. Lets us re-measure one phase without the other.
+var phaseSel = (args.Length > 0 ? args[0] : Environment.GetEnvironmentVariable("DOCNEST_EVAL_PHASE") ?? string.Empty)
+    .Trim().ToLowerInvariant();
+var runGenerated = phaseSel is not ("pdf" or "pdfs" or "phase2");
+var runPdfs = phaseSel is not ("generated" or "docs" or "phase1");
 
-var combinedScores = new List<int>();
-// Re-derive a single headline from both phases' weighted question counts.
+(double Avg, double Hit)? p1 = runGenerated
+    ? await RunPhase("Phase 1 — generated files (xlsx · docx · html · md)", generated)
+    : null;
+(double Avg, double Hit)? p2 = runPdfs
+    ? await RunPhase("Phase 2 — real PDFs (IPCC · BIS · GPT-3 · Attention · Llama 2 · Constitutional AI)", pdfs)
+    : null;
+
+// Headline over the phases that actually ran (weighted by question count).
 Line("## Overall");
 Line();
 Line("| Phase | Avg score | Hit-rate (≥7) |");
 Line("|---|---|---|");
-Line($"| Phase 1 — generated | {p1.Avg:F1}/10 | {p1.Hit:P0} |");
-Line($"| Phase 2 — PDFs | {p2.Avg:F1}/10 | {p2.Hit:P0} |");
-var allCount = generated.Sum(c => c.Questions.Count) + pdfs.Sum(c => c.Questions.Count);
-var weighted = ((p1.Avg * generated.Sum(c => c.Questions.Count)) + (p2.Avg * pdfs.Sum(c => c.Questions.Count))) / allCount;
+if (p1 is { } a1) { Line($"| Phase 1 — generated | {a1.Avg:F1}/10 | {a1.Hit:P0} |"); }
+if (p2 is { } a2) { Line($"| Phase 2 — PDFs | {a2.Avg:F1}/10 | {a2.Hit:P0} |"); }
+var genCount = runGenerated ? generated.Sum(c => c.Questions.Count) : 0;
+var pdfCount = runPdfs ? pdfs.Sum(c => c.Questions.Count) : 0;
+var allCount = genCount + pdfCount;
+var weighted = allCount > 0 ? ((p1?.Avg ?? 0) * genCount + (p2?.Avg ?? 0) * pdfCount) / allCount : 0;
 Line($"| **All ({allCount} Qs)** | **{weighted:F1}/10** | — |");
 Line();
 
@@ -152,6 +267,8 @@ if (root is not null)
 }
 
 try { Directory.Delete(work, recursive: true); } catch (IOException) { }
+embedder?.Dispose();
+reranker?.Dispose();
 
 return 0;
 

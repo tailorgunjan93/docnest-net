@@ -57,6 +57,39 @@ internal sealed class WordPieceTokenizer
         return ids;
     }
 
+    /// <summary>
+    /// Encode a (query, passage) pair for a cross-encoder: <c>[CLS] query [SEP] passage [SEP]</c> with
+    /// segment ids (0 across the query and its <c>[SEP]</c>, 1 across the passage and its <c>[SEP]</c>).
+    /// Truncates greedily to <paramref name="maxLength"/>, always preserving both separators.
+    /// </summary>
+    public (List<long> Ids, List<long> TypeIds) EncodePair(string query, string passage, int maxLength)
+    {
+        var ids = new List<long> { ClsId };
+        var types = new List<long> { 0L };
+
+        AppendSegment(query, segment: 0L, reserve: 2);   // leave room for both [SEP] tokens
+        ids.Add(SepId); types.Add(0L);
+        AppendSegment(passage, segment: 1L, reserve: 1); // leave room for the final [SEP]
+        ids.Add(SepId); types.Add(1L);
+        return (ids, types);
+
+        void AppendSegment(string text, long segment, int reserve)
+        {
+            foreach (var token in BasicTokenize(text ?? string.Empty))
+            {
+                foreach (var pieceId in WordPiece(token))
+                {
+                    if (ids.Count >= maxLength - reserve)
+                    {
+                        return;
+                    }
+                    ids.Add(pieceId);
+                    types.Add(segment);
+                }
+            }
+        }
+    }
+
     private static IEnumerable<string> BasicTokenize(string text)
     {
         var tokens = new List<string>();

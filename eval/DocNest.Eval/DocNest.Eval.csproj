@@ -16,6 +16,8 @@
     <ProjectReference Include="..\..\src\DocNest.Parsers\DocNest.Parsers.csproj" />
     <ProjectReference Include="..\..\src\DocNest.Retrieval\DocNest.Retrieval.csproj" />
     <ProjectReference Include="..\..\src\DocNest.Query\DocNest.Query.csproj" />
+    <!-- Slice 10: real ONNX MiniLM embedder to activate the HybridRetriever dense path. -->
+    <ProjectReference Include="..\..\src\DocNest.Embeddings\DocNest.Embeddings.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -79,6 +79,67 @@ public class EscalationGateTests
         llm.Calls.Should().Be(2);
     }
 
+    [Fact]
+    public async Task Layer3_refusal_escalates_to_layer4_fallback()
+    {
+        // Low confidence (top section barely overlaps the question) → skip Layer 2. Layer-3 synthesis
+        // refuses for lack of context → must escalate to the Layer-4 broad fallback (over all retrieved
+        // sections) instead of returning the refusal as the final answer.
+        var llm = new ScriptedLlm(
+            "I'm sorry, but the provided sections do not contain that information.",
+            "The projected range is 0.3–0.6 m.");
+        var top = Sec("§1", "Glossary", "Definitions of common terms used throughout the report.");
+        var s2 = Sec("§2", "Preface", "Acknowledgements and contributor list for the volume.");
+        var s3 = Sec("§3", "Index", "Alphabetical index of topics and page references.");
+        var engine = new DocNestQueryEngine(new FakeRetriever(top, s2, s3), llm);
+
+        var result = await engine.AnswerAsync(
+            Doc(top, s2, s3), "what are the projected sea level rise ranges for the high emissions scenario");
+
+        result.LayerUsed.Should().Be(4);
+        result.Answer.Should().Be("The projected range is 0.3–0.6 m.");
+        llm.Calls.Should().Be(2); // Layer 3 (refused) + Layer 4 (answered)
+    }
+
+    [Fact]
+    public async Task Enumeration_question_skips_layer0_keynumber_and_escalates()
+    {
+        // A list/enumeration question must NOT be answered by a single key-number at Layer 0 (the
+        // "corpora: 2" misfire) — it must escalate to the LLM over retrieved context.
+        var llm = new FakeLlm();
+        var doc = new Document
+        {
+            DocId = "d", Title = "t", Source = "s", Format = "md",
+            Sections = new[] { Sec("§1", "Datasets", "The model was trained on multiple corpora.") }.ToList(),
+            KeyNumbers = new[] { new KeyNumber { Label = "corpora", Value = "2", Section = "§1" } }.ToList(),
+        };
+        var engine = new DocNestQueryEngine(new FakeRetriever(doc.Sections.ToArray()), llm);
+
+        var result = await engine.AnswerAsync(doc, "what are the training corpora used to train the model");
+
+        result.LayerUsed.Should().BeGreaterThanOrEqualTo(2);     // escalated past Layer 0/1
+        result.Answer.Should().NotContain("corpora: 2");          // not the key-number misfire
+        llm.Calls.Should().BeGreaterThanOrEqualTo(1);
+    }
+
+    [Fact]
+    public async Task Simple_keynumber_question_still_answers_at_layer0()
+    {
+        // The gate must not break genuine single-fact key-number questions.
+        var doc = new Document
+        {
+            DocId = "d", Title = "t", Source = "s", Format = "md",
+            Sections = new[] { Sec("§1", "Reliability", "Uptime details.") }.ToList(),
+            KeyNumbers = new[] { new KeyNumber { Label = "Uptime", Value = "99.9%", Section = "§1" } }.ToList(),
+        };
+        var engine = new DocNestQueryEngine(new FakeRetriever(doc.Sections.ToArray()), new FakeLlm());
+
+        var result = await engine.AnswerAsync(doc, "what is the uptime");
+
+        result.LayerUsed.Should().Be(0);
+        result.Answer.Should().Contain("99.9%");
+    }
+
     // ---- helpers ----
 
     private static Document Doc(params Section[] sections) => new()
