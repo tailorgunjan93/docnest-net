@@ -5,7 +5,8 @@
     <RootNamespace>DocNest.Eval</RootNamespace>
     <AssemblyName>docnest-eval</AssemblyName>
     <IsPackable>false</IsPackable>
-    <!-- Standalone accuracy harness — not part of DocNest.sln, run via `dotnet run`.
+    <!-- Accuracy harness, run via `dotnet run`. Builds under DocNest.sln (so the full suite
+         validates it) but is IsPackable=false — never shipped to NuGet.
          Tests the SAME real files + question sets as the Python eval (eval/cases.json). -->
   </PropertyGroup>
 
@@ -15,10 +16,17 @@
     <ProjectReference Include="..\..\src\DocNest.Parsers\DocNest.Parsers.csproj" />
     <ProjectReference Include="..\..\src\DocNest.Retrieval\DocNest.Retrieval.csproj" />
     <ProjectReference Include="..\..\src\DocNest.Query\DocNest.Query.csproj" />
+    <!-- Slice 10: real ONNX MiniLM embedder to activate the HybridRetriever dense path. -->
+    <ProjectReference Include="..\..\src\DocNest.Embeddings\DocNest.Embeddings.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="cases.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Judge types are internal; exposed to the offline test project (SLICE-09). -->
+    <InternalsVisibleTo Include="DocNest.Eval.Tests" />
   </ItemGroup>
 
 </Project>

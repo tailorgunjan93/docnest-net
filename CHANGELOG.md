@@ -3,6 +3,24 @@
 All notable changes to **DocNest .NET** are documented here. Format based on
 [Keep a Changelog](https://keepachangelog.com/); the project adopts SemVer at its first NuGet release.
 
+## [Unreleased]
+
+### Added — Slice 9: optional LLM-as-judge for the accuracy eval (eval-harness only)
+- **`eval/DocNest.Eval`** gains an optional **LLM-as-judge** that grades each answer 0–10 with the same
+  prompt, rubric, and robust `SCORE`/`REASONING` parse as the Python reference eval's `_judge` — so the
+  .NET and Python accuracy numbers become directly comparable. Gated on `DOCNEST_JUDGE_API_KEY`
+  (+ `DOCNEST_JUDGE_MODEL` / `DOCNEST_JUDGE_BASE_URL`, defaulting to Groq `openai/gpt-oss-120b`); reuses
+  the existing `OpenAiCompatibleLlmProvider` + rate-limit-resilient `RetryingLlmProvider`.
+- **`LocalJudge` stays the zero-cost default** — with no judge key set, the eval behaves byte-for-byte as
+  before (local number/keyword/phrase heuristic, 0 judge tokens). The judge LLM is independent of the
+  answer-generation LLM (`DOCNEST_LLM_API_KEY`).
+- Design: `IAnswerJudge` Strategy (`LocalAnswerJudge` / `LlmAnswerJudge`) selected by `JudgeFactory`; the
+  external LLM stays behind `ILlmProvider`. **No change** to the shipped library, public API, `.udf`
+  contract, or NuGet packages (eval is `IsPackable=false`).
+- Tests: +19 (`ParseScore` variants/defaults, `LlmAnswerJudge` over a scripted provider, `JudgeFactory`
+  gating, and a locked `LocalAnswerJudge`↔`LocalJudge` regression). Full suite green (173 pass).
+  See `docs/phase0/SLICE-09-*`.
+
 ## [0.1.1] - 2026-06-10
 
 ### Fixed — Slice 8: query-engine accuracy parity (escalation + key-number misfire)

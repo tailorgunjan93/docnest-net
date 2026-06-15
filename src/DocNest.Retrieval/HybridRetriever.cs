@@ -12,17 +12,21 @@ namespace DocNest.Retrieval;
 public sealed class HybridRetriever : IRetriever, IDisposable
 {
     private const double SemanticEdgeThreshold = 0.68;
+    private const int RerankPool = 12;     // top RRF candidates re-scored by the cross-encoder (ADR-0013)
     private readonly SqliteRetrievalStore _store;
     private readonly IEmbedder? _embedder;
+    private readonly IReranker? _reranker;
 
     /// <summary>Create a retriever caching to <paramref name="cacheDir"/>; pass an
-    /// <see cref="IEmbedder"/> to enable the dense + semantic-graph signals.</summary>
-    public HybridRetriever(string cacheDir = ".docnest_cache", IEmbedder? embedder = null)
+    /// <see cref="IEmbedder"/> to enable the dense + semantic-graph signals, and an optional
+    /// <see cref="IReranker"/> to re-score the top candidates for precision (ADR-0013).</summary>
+    public HybridRetriever(string cacheDir = ".docnest_cache", IEmbedder? embedder = null, IReranker? reranker = null)
     {
         ArgumentException.ThrowIfNullOrEmpty(cacheDir);
         Directory.CreateDirectory(cacheDir);
         _store = new SqliteRetrievalStore(Path.Combine(cacheDir, "retrieval.db"));
         _embedder = embedder;
+        _reranker = reranker;
     }
 
     /// <inheritdoc/>
@@ -48,11 +52,38 @@ public sealed class HybridRetriever : IRetriever, IDisposable
         var edges = _store.GetEdgesFrom(doc.DocId, scores.Keys.ToList());
         scores = RrfFusion.GraphExpand(scores, edges, sectionCount);
 
-        return scores
+        var ordered = scores
             .Where(kv => kv.Key >= 0 && kv.Key < sectionCount)
             .OrderByDescending(kv => kv.Value)
+            .ToList();
+
+        if (_reranker is not null && ordered.Count > 1)
+        {
+            return await RerankAsync(doc, query, ordered, k, cancellationToken).ConfigureAwait(false);
+        }
+
+        return ordered
             .Take(k)
             .Select(kv => new RetrievalHit(doc.Sections[kv.Key], kv.Value))
+            .ToList();
+    }
+
+    /// <summary>
+    /// Cross-encoder precision pass (ADR-0013): re-score the top <see cref="RerankPool"/> RRF candidates by
+    /// true query↔section relevance and return the best <paramref name="k"/>. Recall still comes from
+    /// BM25 + dense + graph; the reranker only reorders their pool. The returned <c>Score</c> is the CE score.
+    /// </summary>
+    private async Task<IReadOnlyList<RetrievalHit>> RerankAsync(
+        Document doc, string query, List<KeyValuePair<int, double>> ordered, int k, CancellationToken cancellationToken)
+    {
+        var pool = ordered.Take(Math.Min(RerankPool, ordered.Count)).ToList();
+        var passages = pool.Select(kv => $"{doc.Sections[kv.Key].Title} {doc.Sections[kv.Key].Text}").ToList();
+        var ceScores = await _reranker!.ScoreAsync(query, passages, cancellationToken).ConfigureAwait(false);
+        return pool
+            .Select((kv, i) => (Index: kv.Key, Ce: i < ceScores.Count ? ceScores[i] : double.MinValue))
+            .OrderByDescending(x => x.Ce)
+            .Take(k)
+            .Select(x => new RetrievalHit(doc.Sections[x.Index], x.Ce))
             .ToList();
     }
 
