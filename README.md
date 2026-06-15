@@ -68,6 +68,11 @@ dotnet add package DocNest.Embeddings  # optional: local ONNX embeddings + cross
 dotnet tool install -g DocNest.Cli
 ```
 
+📦 **On NuGet:** all packages are published under
+[**nuget.org/profiles/GunjanTailor**](https://www.nuget.org/profiles/GunjanTailor) — e.g.
+[DocNest.Core](https://www.nuget.org/packages/DocNest.Core) ·
+[DocNest.Cli](https://www.nuget.org/packages/DocNest.Cli).
+
 ## 🚀 Quick start (60 seconds)
 
 No API key, no internet — parse a document, save a `.udf`, and answer factual questions at **0 LLM tokens**:
@@ -239,14 +244,14 @@ the deterministic layers aren't confident.
 
 | Package | Role |
 |---|---|
-| `DocNest.Abstractions` | Domain records + wrapper interfaces (`IParser`, `IEmbedder`, `IReranker`, `IRetriever`, `ILlmProvider`) |
-| `DocNest.Core` | Pipeline, normaliser, `.udf` reader/writer, quantizer |
-| `DocNest.Parsers` | md / html / csv / docx / xlsx / pdf parsers |
-| `DocNest.Embeddings` | ONNX MiniLM embedder + ms-marco cross-encoder reranker |
-| `DocNest.Retrieval` | Hybrid retriever (FTS5 BM25 + dense + rerank + RRF + graph) |
-| `DocNest.Query` | 5-layer answer engine + LLM providers |
-| `DocNest.Storage` | `.udf` ZIP storage backend |
-| `DocNest.Cli` | `docnest` dotnet tool (`convert` / `query` / `info`) |
+| [`DocNest.Abstractions`](https://www.nuget.org/packages/DocNest.Abstractions) | Domain records + wrapper interfaces (`IParser`, `IEmbedder`, `IReranker`, `IRetriever`, `ILlmProvider`) |
+| [`DocNest.Core`](https://www.nuget.org/packages/DocNest.Core) | Pipeline, normaliser, `.udf` reader/writer, quantizer |
+| [`DocNest.Parsers`](https://www.nuget.org/packages/DocNest.Parsers) | md / html / csv / docx / xlsx / pdf parsers |
+| [`DocNest.Embeddings`](https://www.nuget.org/packages/DocNest.Embeddings) | ONNX MiniLM embedder + ms-marco cross-encoder reranker |
+| [`DocNest.Retrieval`](https://www.nuget.org/packages/DocNest.Retrieval) | Hybrid retriever (FTS5 BM25 + dense + rerank + RRF + graph) |
+| [`DocNest.Query`](https://www.nuget.org/packages/DocNest.Query) | 5-layer answer engine + LLM providers |
+| [`DocNest.Storage`](https://www.nuget.org/packages/DocNest.Storage) | `.udf` ZIP storage backend |
+| [`DocNest.Cli`](https://www.nuget.org/packages/DocNest.Cli) | `docnest` dotnet tool (`convert` / `query` / `info`) |
 
 Every external dependency sits behind a DocNest wrapper interface; package versions are centrally pinned.
 
