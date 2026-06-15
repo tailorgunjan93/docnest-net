@@ -1,0 +1,45 @@
+name: Publish to NuGet
+
+# Publishes all DocNest.* packages to nuget.org via Trusted Publishing (keyless OIDC — no long-lived key).
+#
+# One-time setup (nuget.org → your username → Trusted Publishing → add policy):
+#   Repository Owner: tailorgunjan93   Repository: docnest-net   Workflow File: publish-nuget.yml
+#   (leave Environment empty)
+# Then add a repository secret  NUGET_USER  = your nuget.org username (profile name, NOT email).
+#
+# Trigger: push a tag like `v0.2.0`, or run manually (Actions → Publish to NuGet → Run workflow).
+
+on:
+  push:
+    tags: [ 'v*' ]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write   # required: GitHub OIDC token for Trusted Publishing
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Pack all DocNest.* packages
+        run: dotnet pack DocNest.sln -c Release -o "${{ github.workspace }}/nupkgs"
+
+      - name: NuGet login (OIDC -> short-lived API key)
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: ${{ secrets.NUGET_USER }}
+
+      - name: Push to nuget.org
+        run: >
+          dotnet nuget push "${{ github.workspace }}/nupkgs/*.nupkg"
+          --api-key ${{ steps.login.outputs.NUGET_API_KEY }}
+          --source https://api.nuget.org/v3/index.json
+          --skip-duplicate
