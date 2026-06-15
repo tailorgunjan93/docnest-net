@@ -21,13 +21,13 @@
 
   <!-- Shared NuGet package metadata (test projects set IsPackable=false, so they ignore this). -->
   <PropertyGroup>
-    <Version>0.1.1</Version>
+    <Version>0.2.0</Version>
     <Authors>SynapseAI</Authors>
     <Company>SynapseAI</Company>
     <Product>DocNest</Product>
     <Description>DocNest — the document normalisation engine RAG has always needed, native for .NET. Read structure before content; emit a portable .udf knowledge base. Secure · Fast · Reliable · Cost-Effective.</Description>
-    <PackageProjectUrl>https://github.com/tailorgunjan93/docnest</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/tailorgunjan93/docnest</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/tailorgunjan93/docnest-net</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/tailorgunjan93/docnest-net</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>

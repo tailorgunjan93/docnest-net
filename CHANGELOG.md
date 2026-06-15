@@ -3,7 +3,27 @@
 All notable changes to **DocNest .NET** are documented here. Format based on
 [Keep a Changelog](https://keepachangelog.com/); the project adopts SemVer at its first NuGet release.
 
-## [Unreleased]
+## [0.2.0] - 2026-06-15
+
+### Added — Slice 11: cross-encoder reranker + answer-quality fixes (ADR-0013)
+- **`IReranker`** + **`OnnxCrossEncoderReranker`** (ms-marco-MiniLM-L-6-v2 ONNX, pair-tokenized, single
+  relevance logit) + **`CrossEncoderModel`** opt-in download. `HybridRetriever` re-scores the top-12 RRF
+  candidates and returns top-k by cross-encoder score — recall from BM25+dense+graph, precision from the CE.
+- **`DocNestQueryEngine`** answer-quality fixes: Layer-3 context 600→1400 chars ×5 sections; a refusal/empty
+  Layer-3 answer escalates to a Layer-4 broad fallback over the top-8 retrieved sections; answer budget
+  512→1500 tokens (room for reasoning models); a **complex-question gate** (enumeration/explanation skip
+  Layer-0/1 → reranked LLM, killing the "corpora: 2" key-number misfire); an **enumeration hint** so
+  "list all X" questions emit every item.
+- Eval: cross-encoder rerank wired in (opt-in, `DOCNEST_MSMARCO_CACHE`); **PDFs 5.1→6.8/10 (hit 47%→70%),
+  overall ~7.1/10** (Cerebras `gpt-oss-120b` + `qwen2.5` judge). Degrades to RRF when the model is absent.
+- Tests: +2 reranker `[SkippableFact]`, +3 engine regression tests. See `docs/phase0/SLICE-11-*`, ADR-0013.
+
+### Added — Slice 10: dense embeddings in the eval retrieval path (ADR-0012)
+- Wired the existing **`OnnxEmbedder`** (MiniLM) into the eval's `HybridRetriever` so the dense + semantic-
+  graph signals activate (the retriever already supported `IEmbedder`; only the wiring was missing). Opt-in
+  model provisioning (`DOCNEST_MINILM_CACHE` / `DOCNEST_DOWNLOAD_MODEL`); graceful BM25-only degrade.
+- Tests: +`OnnxDenseRetrievalTests` (real-model `[SkippableFact]`: dense surfaces a lexically-disjoint
+  section BM25 misses). See `docs/phase0/SLICE-10-*`, ADR-0012.
 
 ### Added — Slice 9: optional LLM-as-judge for the accuracy eval (eval-harness only)
 - **`eval/DocNest.Eval`** gains an optional **LLM-as-judge** that grades each answer 0–10 with the same
