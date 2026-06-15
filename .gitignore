@@ -20,6 +20,11 @@ artifacts/
 models/*.onnx
 *.onnx_data
 
+# Secrets / local config (keys are read from env vars, never committed)
+.env
+*.env
+!*.env.example
+
 # OS / editor
 .idea/
 .DS_Store
