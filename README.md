@@ -27,6 +27,16 @@ base, **byte-compatible with the Python implementation**.
 > **Status: pre-1.0**, built slice-by-slice under a gated protocol. Core pipeline, hybrid retrieval,
 > cross-encoder reranking, and the 5-layer answer engine are implemented and tested.
 
+### Two independent choices
+
+- **Embeddings run locally** — a small ONNX MiniLM model (+ an optional ONNX cross-encoder reranker),
+  downloaded once and cached. **No API key, fully offline.** *(Cloud embedding providers such as OpenAI
+  are supported in the Python engine but are **not yet** ported to .NET — embeddings here are local-only.)*
+- **The LLM is optional** — Layers 0–1 answer factual questions at **zero tokens, no key**. Add a provider
+  **only** for synthesis (Layers 2–4): any OpenAI-compatible endpoint (OpenAI, Groq, Cerebras, Together,
+  OpenRouter), Anthropic, or a fully local Ollama / LM Studio server. Here "OpenAI" means the *answer LLM*,
+  not embeddings.
+
 ## The problem it solves
 
 Most RAG pipelines ingest the same broken way — `extract text → split every 512 chars → embed → hope` —
