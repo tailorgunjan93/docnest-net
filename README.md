@@ -293,6 +293,28 @@ cross-ecosystem contract, `UDF_VERSION`, or the public API.
 | [ADRs](docs/adr/) | Architecture decision records |
 | [Phase 0 docs](docs/phase0/) | Per-slice BA / Dev / QA understanding |
 
+## 🤝 Contributing
+
+DocNest .NET is built in the open and **welcomes contributors at every level** — see
+[CONTRIBUTING.md](CONTRIBUTING.md). Get going in two commands:
+
+```bash
+git clone https://github.com/tailorgunjan93/docnest-net && cd docnest-net
+dotnet test DocNest.sln      # the full suite should be green before you start
+```
+
+| Where to help | Good for |
+|---|---|
+| 🧩 New parser (PPTX, EPUB, JSON, RTF) | document-format experience |
+| ☁️ Cloud embedder via `IEmbedder` (OpenAI, Cohere…) | API integration |
+| 🔌 New vector backend / connector | retrieval / infra experience |
+| 🧪 Test fixtures & 📖 docs | any skill level |
+| 🐛 Bug reports / 💡 ideas | any skill level — open an [Issue](https://github.com/tailorgunjan93/docnest-net/issues) or [Discussion](https://github.com/tailorgunjan93/docnest-net/discussions) |
+
+Changes follow the gated [DEVELOPMENT_PROTOCOL](docs/DEVELOPMENT_PROTOCOL.md) and never break the `.udf`
+contract or public API. **If DocNest saves you time, please ⭐ the repo — it's the #1 way other
+developers find it.**
+
 ## 📄 License
 
 MIT — free for commercial use. See [LICENSE](LICENSE).
