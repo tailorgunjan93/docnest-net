@@ -20,6 +20,10 @@ jobs:
     permissions:
       id-token: write   # required: GitHub OIDC token for Trusted Publishing
       contents: read
+    env:
+      # Empty until you add the NUGET_USER secret + a nuget.org Trusted Publishing policy.
+      # While empty, the login/push steps below SKIP cleanly (no failed run); pack still validates the build.
+      NUGET_USER: ${{ secrets.NUGET_USER }}
     steps:
       - uses: actions/checkout@v4
 
@@ -32,12 +36,14 @@ jobs:
         run: dotnet pack DocNest.sln -c Release -o "${{ github.workspace }}/nupkgs"
 
       - name: NuGet login (OIDC -> short-lived API key)
+        if: env.NUGET_USER != ''
         uses: NuGet/login@v1
         id: login
         with:
-          user: ${{ secrets.NUGET_USER }}
+          user: ${{ env.NUGET_USER }}
 
       - name: Push to nuget.org
+        if: env.NUGET_USER != ''
         run: >
           dotnet nuget push "${{ github.workspace }}/nupkgs/*.nupkg"
           --api-key ${{ steps.login.outputs.NUGET_API_KEY }}
